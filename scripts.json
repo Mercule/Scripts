@@ -17,7 +17,7 @@
       "null"
     ],
     "path": "CoreBots.cs",
-    "size": 171190,
+    "size": 171208,
     "fileName": "CoreBots.cs",
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/CoreBots.cs"
   },
@@ -3115,7 +3115,7 @@
       "rare-items"
     ],
     "path": "Other/0CurrentDailyGifts.cs",
-    "size": 19150,
+    "size": 19330,
     "fileName": "0CurrentDailyGifts.cs",
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Other/0CurrentDailyGifts.cs"
   },
@@ -7390,6 +7390,21 @@
     "size": 1413,
     "fileName": "BeachPartyTokenItems.cs",
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Seasonal/SummerBreak/BeachPartyTokenItems.cs"
+  },
+  {
+    "name": "Rose Rapiers",
+    "description": "does the quests in /summerhub (part of the thorny scavenger clue) for both rose rapiers",
+    "tags": [
+      "rose",
+      "rapier",
+      "summer",
+      "seasonal",
+      "summerhub"
+    ],
+    "path": "Seasonal/SummerBreak/RoseRapiers.cs",
+    "size": 1766,
+    "fileName": "RoseRapiers.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Seasonal/SummerBreak/RoseRapiers.cs"
   },
   {
     "name": "Extra Credit AC Items",
@@ -12584,7 +12599,7 @@
       "reagents"
     ],
     "path": "Army/ArmyNulgath/ArmySupplies.cs",
-    "size": 4117,
+    "size": 4129,
     "fileName": "ArmySupplies.cs",
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Army/ArmyNulgath/ArmySupplies.cs"
   },
@@ -14035,6 +14050,33 @@
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Other/MergeShops/BeleensChaosFuzzyMerge.cs"
   },
   {
+    "name": "Cysero Merge",
+    "description": "This bot will farm the items belonging to the selected mode for the Cysero Merge [668] in /battleontown",
+    "tags": [
+      "cysero",
+      "merge",
+      "battleontown",
+      "mad",
+      "magic",
+      "manawalker",
+      "mana",
+      "green",
+      "sockatana",
+      "living",
+      "yogurt",
+      "warrior",
+      "berry",
+      "tasty",
+      "gilded",
+      "rainbow",
+      "wrap"
+    ],
+    "path": "Other/MergeShops/CyseroMerge.cs",
+    "size": 3954,
+    "fileName": "CyseroMerge.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Other/MergeShops/CyseroMerge.cs"
+  },
+  {
     "name": "ShipWreckMerge[non-ac]",
     "description": "null",
     "tags": [
@@ -14044,6 +14086,47 @@
     "size": 6285,
     "fileName": "ShipWreckMerge[non-ac].cs",
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Other/MergeShops/ShipWreckMerge[non-ac].cs"
+  },
+  {
+    "name": "Faction Banners Merge",
+    "description": "This bot will farm the items belonging to the selected mode for the Faction Banners Merge [1717] in /snowmore",
+    "tags": [
+      "faction",
+      "banners",
+      "merge",
+      "snowmore",
+      "alchemy",
+      "banner",
+      "i",
+      "left",
+      "ii",
+      "arcangrove",
+      "chaos",
+      "chronospan",
+      "crystallis",
+      "doomwood",
+      "dwarfhold",
+      "evil",
+      "good",
+      "hollowborn",
+      "horc",
+      "legion",
+      "lycan",
+      "nation",
+      "ravenloss",
+      "seraphic",
+      "seraph",
+      "troll",
+      "vampire",
+      "blight",
+      "kings",
+      "winter",
+      "throne"
+    ],
+    "path": "Other/MergeShops/FactionBannersMerge.cs",
+    "size": 9582,
+    "fileName": "FactionBannersMerge.cs",
+    "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Other/MergeShops/FactionBannersMerge.cs"
   },
   {
     "name": "DeepTunnelMerge",
@@ -14928,7 +15011,7 @@
       "null"
     ],
     "path": "Other/FarmJoeKits/CoreFarmerJoe.cs",
-    "size": 19504,
+    "size": 19505,
     "fileName": "CoreFarmerJoe.cs",
     "downloadUrl": "https://raw.githubusercontent.com/BrenoHenrike/Scripts/Skua/Other/FarmJoeKits/CoreFarmerJoe.cs"
   },
