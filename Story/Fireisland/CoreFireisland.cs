@@ -24,7 +24,7 @@ public class CoreFireIsland
 
     public void CompleteFireIsland()
     {
-        if (Core.isCompletedBefore(4235))
+        if (Core.isCompletedBefore(Core.IsMember ? 4157 : 4235))
             return;
 
         Embersea();
@@ -60,6 +60,8 @@ public class CoreFireIsland
     {
         if (Core.isCompletedBefore(4081))
             return;
+
+        Embersea();
 
         Story.PreLoad(this);
 
@@ -140,6 +142,8 @@ public class CoreFireIsland
         if (Core.isCompletedBefore(4142))
             return;
 
+        Pyrewatch();
+
         Story.PreLoad(this);
 
         //Quench the Flames
@@ -171,7 +175,18 @@ public class CoreFireIsland
         Story.KillQuest(4133, "feverfew", "Twisted Undine");
 
         //Fear the Fog
-        Story.KillQuest(4134, "feverfew", new[] { "Firestorm Knight", "Twisted Undine", "Feverfew Vase", "Coral Creeper", "Salamander" });
+        if (!Story.QuestProgression(4134))
+        {
+            Core.EnsureAccept(4134);
+
+            Core.HuntMonster("feverfew", "Salamander", "Salamander Tongue", 3, log: false);
+            Core.HuntMonster("feverfew", "Feverfew Vase", "Adderoot Powder", 2, log: false);
+            Core.HuntMonster("feverfew", "Twisted Undine", "Shadowbane Brine", 4, log: false);
+            Core.HuntMonster("feverfew", "Coral Creeper", "Charred Claw", 2, log: false);
+            Core.HuntMonster("feverfew", "Firestorm Knight", "Whispered Regret", log: false);
+
+            Core.EnsureComplete(4134);
+        }
 
         //When There's Smoke...
         Story.MapItemQuest(4135, "feverfew", 3248);
@@ -183,7 +198,7 @@ public class CoreFireIsland
         Story.MapItemQuest(4137, "feverfew", 3242, 10);
 
         //Parting the Waters
-        Story.KillQuest(4138, "feverfew", new[] { "Firestorm Knight", "Twisted Undine", "Coral Creeper", "Salamander" });
+        Story.KillQuest(4138, "feverfew", new[] { "Salamander", "Coral Creeper", "Firestorm Knight", "Twisted Undine" });
 
         //The Power to Heal
         Story.KillQuest(4139, "feverfew", new[] { "Locked Chest", "Feverfew Vase", "Twisted Undine" });
@@ -202,6 +217,8 @@ public class CoreFireIsland
     {
         if (Core.isCompletedBefore(4213))
             return;
+
+        Feverfew();
 
         Story.PreLoad(this);
 
@@ -234,7 +251,7 @@ public class CoreFireIsland
         Story.KillQuest(4209, "phoenixrise", new[] { "Pyrric Ursus", "Lava Troll", "Infernal Goblin", "Firestorm Tiger" });
 
         //Strengthen the Survivors
-        Story.KillQuest(4210, "phoenixrise", new[] { "Pyrric Ursus", "Lava Troll", "Infernal Goblin", "Firestorm Tiger", });
+        Story.KillQuest(4210, "phoenixrise", new[] { "Infernal Goblin", "Firestorm Tiger", "Pyrric Ursus", "Lava Troll" });
 
         //Bridge to Salvation
         Story.KillQuest(4211, "phoenixrise", "Lava Troll");
@@ -250,6 +267,8 @@ public class CoreFireIsland
     {
         if (Core.isCompletedBefore(4226))
             return;
+
+        Phoenixrise();
 
         Story.PreLoad(this);
 
@@ -295,6 +314,10 @@ public class CoreFireIsland
         if (Core.isCompletedBefore(4235))
             return;
 
+        Fireforge();
+
+        Story.PreLoad(this);
+
         //Defeat Phedra 4231
         Story.KillQuest(4231, "Lavarun", "Phedra");
 
@@ -307,12 +330,9 @@ public class CoreFireIsland
 
     public void Brimstone()
     {
-        if (Core.isCompletedBefore(4115))
-            return;
-
-        if (!Core.IsMember)
+        if (Core.isCompletedBefore(4115) || !Core.IsMember)
         {
-            Core.Logger("You need to be a member for complete the /brimestone questline.");
+            Core.Logger(!Core.IsMember ? "You need to be a member to complete /brimestone questline." : "Brimstone Story Complete");
             return;
         }
 

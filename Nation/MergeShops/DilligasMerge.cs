@@ -36,7 +36,7 @@ public class DilligasMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("evilwarnul", 465, findIngredients, buyOnlyThis, buyMode: buyMode);
@@ -56,7 +56,7 @@ public class DilligasMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -70,7 +70,7 @@ public class DilligasMerge
                     break;
 
                 case "Tainted Gem":
-                    Nation.SwindleBulk(quant);
+                    Nation.FarmTaintedGem(quant);
                     break;
 
                 case "Dark Crystal Shard":

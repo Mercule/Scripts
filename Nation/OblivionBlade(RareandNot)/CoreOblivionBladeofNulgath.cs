@@ -144,8 +144,8 @@ public class CoreOblivionBladeofNulgath
         Adv.RankUpClass("Warlord");
         Core.AddDrop("Champion Blade of Nulgath");
 
-        Nation.Supplies("Voucher of Nulgath", voucherNeeded: true);
-        Nation.Supplies("Voucher of Nulgath (non-mem)", voucherNeeded: true);
+        Nation.Supplies("Voucher of Nulgath");
+        Nation.Supplies("Voucher of Nulgath (non-mem)");
         Nation.FarmUni13();
         Core.HuntMonster("Evilmarsh", "Tainte Elemental", "Tainted Rune of Evil");
         Bot.Wait.ForPickup("Champion Blade of Nulgath");
@@ -231,12 +231,13 @@ public class CoreOblivionBladeofNulgath
     {
         if (Core.IsMember && Core.CheckInventory("Oblivion Blade of Nulgath Pet"))
             Core.RegisterQuests(OblivionID);
-        if (Core.CheckInventory("Oblivion Blade of Nulgath Pet (Rare)"))
+        else if (Core.CheckInventory("Oblivion Blade of Nulgath Pet (Rare)"))
             Core.RegisterQuests(OblivionRareID);
         else
         {
-            Core.Logger("You Dont Own Either of The Required Pets.");
-            return;
+            Core.Logger("You Dont Own Either of The Required Pets.", stopBot: true);
         }
+        return;
     }
+
 }

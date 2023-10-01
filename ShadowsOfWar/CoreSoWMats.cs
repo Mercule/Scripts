@@ -62,12 +62,16 @@ public class CoreSoWMats
 
         SoW.ManaCradle();
 
+        if (!Core.isCompletedBefore(9126))
+        {
+            Core.Logger("Once Upon Another Time 9126, missing quest progress (Group Boss - skua no can do)");
+            return;
+        }
+
         Core.FarmingLogger("Elemental Core", Quantity);
         Core.AddDrop("Elemental Core");
 
-        if (Core.CheckInventory("Yami no Ronin"))
-            Bot.Skills.StartAdvanced("Yami no Ronin", true, ClassUseMode.Solo);
-        else Core.EquipClass(ClassType.Solo);
+        Core.BossClass();
 
         Core.RegisterQuests(9126);
         while (!Bot.ShouldExit && !Core.CheckInventory("Elemental Core", Quantity))
@@ -155,10 +159,10 @@ public class CoreSoWMats
         while (!Bot.ShouldExit && !Core.CheckInventory("Willpower", Quantity))
         {
             Core.EquipClass(ClassType.Solo);
-            Core.HuntMonster($"ruinedcrown", "Calamitous Warlic", "Warlic’s Favor", log: false);
+            Core.HuntMonster("ruinedcrown", "Calamitous Warlic", "Warlic's Favor", log: false);
             Core.EquipClass(ClassType.Farm);
             Core.HuntMonster("ruinedcrown", "Frenzied Mana", "Mana Residue", 8, log: false);
-            Core.HuntMonster($"ruinedcrown", "Mana-Burdened Mage", "Mage’s Blood Sample", 8, log: false);
+            Core.HuntMonster("ruinedcrown", "Mana-Burdened Mage", "Mage's Blood Sample", 8, log: false);
         }
         Core.CancelRegisteredQuests();
     }

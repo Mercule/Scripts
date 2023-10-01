@@ -21,7 +21,7 @@ tags: hollowborn chaos envy, hollowborn, wavering illusions
 //cs_include Scripts/Story/StarSinc.cs
 //cs_include Scripts/Story/TitanAttack.cs
 //cs_include Scripts/Story/TowerOfDoom.cs
-//cs_include Scripts/Other/MergeShops/TitanGearIIMerge.cs
+//cs_include Scripts/Other/MergeShops/TitanStrikeGearMerge.cs
 //cs_include Scripts/Hollowborn/HollowbornChaosEnvoy/CoreHollowbornChaosEnvoy.cs
 //cs_include Scripts/Other/Badges/ChaosPuppetMaster.cs
 using Skua.Core.Interfaces;
@@ -34,14 +34,14 @@ public class HBCE4
     private static CoreHollowbornChaosEnvoy sHBCE = new();
 
     public string OptionsStorage = sHBCE.OptionsStorage;
-    public bool DontPreconfigure = true;
+    public bool DontPreconfigure = false;
     public List<IOption> Options = sHBCE.Options;
 
     public void ScriptMain(IScriptInterface bot)
     {
         Core.SetOptions();
 
-        HBCE.WaveringIllusions(Bot.Config.Get<bool>("getAll"));
+        HBCE.WaveringIllusions(Bot.Config!.Get<CoreHollowbornChaosEnvoy.WaveringIllusionsRewards>("Wavering Illusions"));
 
         Core.SetOptions(false);
     }

@@ -30,6 +30,7 @@ public class IceWingLevelingArmy
         sArmy.player4,
         sArmy.player5,
         sArmy.player6,
+		sArmy.player7,
         CoreBots.Instance.SkipOptions,
     };
 
@@ -53,7 +54,7 @@ public class IceWingLevelingArmy
 
         Core.RegisterQuests(Core.IsMember ? 6635 : 6632);
         while (!Bot.ShouldExit)
-            ArmyHunt("icestormarena", new[] { "Warlord Icewing" }, "Warlord Icewing Defeated", ClassType.Solo, true);
+            ArmyHunt("icewing", new[] { "Warlord Icewing" }, "Warlord Icewing Defeated", ClassType.Solo, true);
         Core.CancelRegisteredQuests();
     }
 
@@ -70,7 +71,6 @@ public class IceWingLevelingArmy
         Army.waitForParty(map, item);
         Core.FarmingLogger(item, quant);
         
-        Core.Jump("r23");
         Bot.Player.SetSpawnPoint();
 
         while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))

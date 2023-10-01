@@ -11,6 +11,7 @@ tags: army, gold, battle ground e, dark war legion, dark war nation, seven circl
 //cs_include Scripts/Story/LordsofChaos/Core13LoC.cs
 //cs_include Scripts/Story/Legion/DarkWarLegionandNation.cs
 //cs_include Scripts/Story/Legion/SevenCircles(War).cs
+//cs_include Scripts/Story/ShadowsOfWar/CoreSoW.cs
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Items;
 using Skua.Core.Models.Quests;
@@ -25,6 +26,7 @@ public class ArmyGold
     private CoreArmyLite Army = new();
     private DarkWarLegionandNation DWLN = new();
     public SevenCircles SC = new();
+    private CoreSoW SoW = new();
 
     private static CoreBots sCore = new();
     private static CoreArmyLite sArmy = new();
@@ -49,7 +51,7 @@ public class ArmyGold
     {
         Core.SetOptions(disableClassSwap: true);
 
-        Setup(Bot.Config.Get<Method>("mapname"));
+        Setup(Bot.Config!.Get<Method>("mapname"));
 
         Core.SetOptions(false);
     }
@@ -59,17 +61,21 @@ public class ArmyGold
         Core.OneTimeMessage("Only for army", "This is intended for use with an army, not for solo players.");
 
         Core.EquipClass(ClassType.Farm);
-        Adv.BestGear(GenericGearBoost.gold);
+        //Adv.BestGear(GenericGearBoost.gold);
         Farm.ToggleBoost(BoostType.Gold);
+        Bot.Lite.ReacceptQuest = true;
 
         if (((int)mapname == 0) || ((int)mapname == 1))
-            BGE(Bot.Config.Get<Method>("mapname"));
+            BGE(Bot.Config!.Get<Method>("mapname"));
         else if (((int)mapname == 2))
             DWL();
         else if (((int)mapname == 3))
             DWN();
         else if (((int)mapname == 4))
             SCW();
+        else if (((int)mapname == 5))
+            StreamWar();
+        Bot.Lite.ReacceptQuest = false;
     }
 
     public void BGE(Method mapname)
@@ -81,23 +87,19 @@ public class ArmyGold
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = Army.getRoomNr();
 
-        if (((int)mapname == 0 && Core.IsMember))
-            Core.RegisterQuests(3991, 3992, 3993);
-        else if (((int)mapname == 1))
-            Core.RegisterQuests(3991, 3992);
+        Core.RegisterQuests(Core.IsMember ? new[] { 3991, 3992, 3993 } : new[] { 3991, 3992 });
 
         Army.AggroMonMIDs(1, 2, 3, 4, 5, 6);
-        Army.AggroMonStart(mapname.ToString());
+        Army.AggroMonStart("battlegrounde");
+        Army.DivideOnCells("r4", "r3", "r2", "r1");
 
-        if ((int)mapname == 0)
-            Army.DivideOnCells("r4", "r3", "r2", "r1");
-        else Army.DivideOnCells("r4", "r3", "r2", "r1");
 
-        while (!Bot.ShouldExit)// && Bot.Player.Gold < 100000000)
+        while (!Bot.ShouldExit && Bot.Player.Gold < 100000000)
             Bot.Combat.Attack("*");
         Army.AggroMonStop(true);
         Farm.ToggleBoost(BoostType.Gold, false);
         Core.CancelRegisteredQuests();
+        Army.waitForParty("whitemap");
     }
 
     public void DWL()
@@ -107,13 +109,18 @@ public class ArmyGold
 
         DWLN.DarkWarLegion();
 
+        Army.AggroMonMIDs(1, 2, 3, 4, 5, 6, 7, 8);
+        Army.AggroMonStart("darkwarlegion");
+        Army.DivideOnCells("Enter", "r2", "r3");
+
         Core.RegisterQuests(8584, 8585, 8586, 8587); //Nation Badges 8584, Mega Nation Badges 8585, A Nation Defeated 8586, ManSlayer? More Like ManSLAIN 8587
-        Army.SmartAggroMonStart("darkwarlegion", "Bloodfiend", "Dreadfiend", "Infernal Fiend", "Manslayer Fiend", "Void Fiend");
-        while (!Bot.ShouldExit)// && Bot.Player.Gold < 100000000)
+        // Army.SmartAggroMonStart("darkwarlegion", "Bloodfiend", "Dreadfiend", "Infernal Fiend", "Manslayer Fiend", "Void Fiend");
+        while (!Bot.ShouldExit && Bot.Player.Gold < 100000000)
             Bot.Combat.Attack("*");
         Army.AggroMonStop(true);
         Farm.ToggleBoost(BoostType.Gold, false);
         Core.CancelRegisteredQuests();
+        Army.waitForParty("whitemap");
     }
 
     public void DWN()
@@ -124,12 +131,18 @@ public class ArmyGold
         DWLN.DarkWarNation();
 
         Core.RegisterQuests(8578, 8579, 8580, 8581); //Legion Badges, Mega Legion Badges, Doomed Legion Warriors, Undead Legion Dread
-        Army.SmartAggroMonStart("darkwarnation", "High Legion Inquisitor", "Legion Doomknight", "Legion Dread Knight", "Legion Dreadmarch", "Legion Fiend Rider");
-        while (!Bot.ShouldExit)// && Bot.Player.Gold < 100000000)
+
+        Army.AggroMonMIDs(1, 2, 3, 4, 5, 6, 7, 8);
+        Army.AggroMonStart("darkwarnation");
+        Army.DivideOnCells("Enter", "r2", "r3");
+
+        // Army.SmartAggroMonStart("darkwarnation", "High Legion Inquisitor", "Legion Doomknight", "Legion Dread Knight");
+        while (!Bot.ShouldExit && Bot.Player.Gold < 100000000)
             Bot.Combat.Attack("*");
         Army.AggroMonStop(true);
         Farm.ToggleBoost(BoostType.Gold, false);
         Core.CancelRegisteredQuests();
+        Army.waitForParty("whitemap");
     }
 
     public void SCW()
@@ -140,12 +153,42 @@ public class ArmyGold
         SC.CirclesWar(true);
 
         Core.RegisterQuests(7979, 7980, 7981);
-        Army.SmartAggroMonStart("sevencircleswar", "Wrath Guard", "Heresy Guard", "Violence Guard", "Treachery Guard");
-        while (!Bot.ShouldExit)// && Bot.Player.Gold < 100000000)
+
+        Army.AggroMonMIDs(1, 2, 3, 4, 5, 6);
+        Army.AggroMonStart("sevencircleswar");
+        Army.DivideOnCells("Enter", "r2", "r3");
+
+        // Army.SmartAggroMonStart("sevencircleswar", "Wrath Guard", "Heresy Guard", "Violence Guard", "Treachery Guard");
+        while (!Bot.ShouldExit && Bot.Player.Gold < 100000000)
             Bot.Combat.Attack("*");
         Army.AggroMonStop(true);
         Farm.ToggleBoost(BoostType.Gold, false);
         Core.CancelRegisteredQuests();
+        Army.waitForParty("whitemap");
+    }
+
+    public void StreamWar()
+    {
+        Core.PrivateRooms = true;
+        Core.PrivateRoomNumber = Army.getRoomNr();
+
+        Core.AddDrop("Prismatic Seams");
+
+        SoW.TimestreamWar();
+
+        Army.AggroMonMIDs(8, 9, 10, 11, 12, 13);
+        Army.AggroMonStart("streamwar");
+        Army.DivideOnCells("r3a");
+
+        Core.RegisterQuests(8814, 8815);
+        while (!Bot.ShouldExit && Bot.Player.Gold < 100000000)
+            Bot.Combat.Attack("*");
+        Army.AggroMonStop(true);
+        Farm.ToggleBoost(BoostType.Gold, false);
+        Core.CancelRegisteredQuests();
+
+        Core.ToBank("Prismatic Seams");
+        Army.waitForParty("whitemap");
     }
 
     public enum Method
@@ -154,6 +197,7 @@ public class ArmyGold
         HonorHall = 1,
         DarkWarLegion = 2,
         DarkWarNation = 3,
-        SevenCirclesWar = 4
+        SevenCirclesWar = 4,
+        StreamWar = 5
     }
 }

@@ -5,9 +5,10 @@ tags: merge-shop, alpha, pirate, class
 */
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
-//cs_include Scripts/CoreDailies.cs
 //cs_include Scripts/CoreStory.cs
 //cs_include Scripts/CoreAdvanced.cs
+//cs_include Scripts/Seasonal/TalkLikeaPirateDay/BlazeBeardStory.cs
+//cs_include Scripts/Seasonal\TalkLikeaPirateDay\MergeShops\BlazeBeardMerge.cs
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Items;
 using Skua.Core.Models.Quests;
@@ -17,10 +18,8 @@ public class AlphaPirate
 {
     public IScriptInterface Bot => IScriptInterface.Instance;
     public CoreBots Core => CoreBots.Instance;
-    public CoreFarms Farm = new CoreFarms();
     public CoreAdvanced Adv = new CoreAdvanced();
-    public CoreStory Story = new CoreStory();
-    public CoreDailies Daily = new();
+    private BlazeBeardMerge BBM = new();
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -33,13 +32,10 @@ public class AlphaPirate
 
     public void GetAlphaPirate(bool rankUpClass = true)
     {
-        if (!Core.isSeasonalMapActive("blazebeard"))
+        if (Core.CheckInventory("Alpha Pirate") || !Core.isSeasonalMapActive("blazebeard"))
             return;
 
-        if (!Core.CheckInventory("Alpha Pirate Class Token"))
-            return;
-
-        Core.BuyItem("blazebeard", 108, "Alpha Pirate");
+        BBM.BuyAllMerge("Alpha Pirate");
 
         if (rankUpClass)
             Adv.RankUpClass("Alpha Pirate");

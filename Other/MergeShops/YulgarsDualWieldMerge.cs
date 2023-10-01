@@ -51,7 +51,7 @@ public class YulgarsDualWieldMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         if (!Core.CheckInventory("Golden 8th Birthday Candle"))
             Core.BuyItem(Bot.Map.Name, 1317, "Golden 8th Birthday Candle");
@@ -79,7 +79,7 @@ public class YulgarsDualWieldMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -256,7 +256,7 @@ public class YulgarsDualWieldMerge
 
                 case "Hanzamune Dragon Koi Blade":
                     Core.EquipClass(ClassType.Solo);
-                    Core.KillKitsune(req.Name);
+                    Core.KillKitsune(req.Name, quant, req.Temp);
                     break;
 
                 case "Ugly Stick":
@@ -563,7 +563,7 @@ public class YulgarsDualWieldMerge
                     break;
 
                 case "Burn it Down":
-                    if (!Daily.CheckDaily(187, true, req.Name))
+                    if (!Daily.CheckDaily(187, true, true, req.Name))
                     {
                         Core.Logger($"{req.Name} owned, or daily unavailable");
                         return;

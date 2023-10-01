@@ -36,7 +36,7 @@ public class NulgathWarMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("evilwarnul", 452, findIngredients, buyOnlyThis, buyMode: buyMode);
@@ -56,7 +56,7 @@ public class NulgathWarMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -82,7 +82,7 @@ public class NulgathWarMerge
                     break;
 
                 case "Tainted Gem":
-                    Nation.SwindleBulk(quant);
+                    Nation.FarmTaintedGem(quant);
                     break;
 
                 case "Random Weapon of Nulgath":

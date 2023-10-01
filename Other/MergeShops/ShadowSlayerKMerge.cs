@@ -45,7 +45,7 @@ public class ShadowSlayerKMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         var result = Bot.ShowMessageBox("Items containing the word \"Shadow\" in this shop cost 1 Elders' Blood per piece, " +
                                                 "which is a valuable resource used to get Void Highlord. Are you sure you want to continue?",
@@ -72,7 +72,7 @@ public class ShadowSlayerKMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion

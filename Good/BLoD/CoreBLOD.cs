@@ -126,10 +126,20 @@ public class CoreBLOD
         Story.BuyQuest(2067, "doomwood", 276, "Bonegrinder Medal");
 
         // 2082 - Essential Essences
-        Story.KillQuest(2082, "battleunderb", "Skeleton Warrior");
+        if(!Story.QuestProgression(2082))
+        {
+            Core.EnsureAccept(2082);
+            Core.HuntMonster("battleunderb", "Skeleton Warrior", "Undead Essence", 25, isTemp: false);
+            Core.EnsureComplete(2082);
+        }
 
         // 2083 - Bust some Dust
-        Story.KillQuest(2083, "battleunderb", "Skeleton Warrior");
+        if(!Story.QuestProgression(2083))
+        {
+            Core.EnsureAccept(2083);
+            Core.HuntMonster("battleunderb", "Skeleton Warrior", "Bone Dust", 40, isTemp: false);
+            Core.EnsureComplete(2083);
+        }
 
         // 2084 - A Loyal Follower
         if (!Story.QuestProgression(2084))
@@ -138,7 +148,7 @@ public class CoreBLOD
             Core.EnsureAccept(2084);
             SpiritOrb(100);
             Core.HuntMonster("timevoid", "Ephemerite", "Celestial Compass");
-            Story.QuestComplete(2084);
+            Core.EnsureComplete(2084);
         }
     }
 
@@ -386,9 +396,9 @@ public class CoreBLOD
 
             Core.EquipClass(ClassType.Solo);
             Core.KillMonster("greendragon", "Boss", "Left", "Greenguard Dragon", "Greenguard Dragon Hide", 3, log: false);
-            Core.KillMonster("sandcastle", "r7", "Left", "Chaos Sphinx", "Gold Brush", publicRoom: true, log: false);
+            Core.KillMonster("sandcastle", "r7", "Left", "Chaos Sphinx", "Gold Brush", log: false);
             Core.KillMonster("crashsite", "Boss", "Left", "ProtoSartorium", "Non-abrasive Power Powder", log: false);
-            Core.KillKitsune("No. 1337 Blade Oil", publicRoom: true, log: false);
+            Core.KillKitsune("No. 1337 Blade Oil");
             Core.KillMonster("citadel", "m14", "Left", "Grand Inquisitor", "Blinding Lacquer Finish", log: false);
             Core.HuntMonster("djinn", "Harpy", "Suede Travel Case", log: false);
             Core.KillMonster("roc", "Enter", "Spawn", "Rock Roc", "Sharp Stone Sharpener", log: false);

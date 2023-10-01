@@ -39,7 +39,7 @@ public class WinterHorrorWarRewardsMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         FV.Howardshill();
         //Only edit the map and shopID here
@@ -60,7 +60,7 @@ public class WinterHorrorWarRewardsMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -68,7 +68,7 @@ public class WinterHorrorWarRewardsMerge
                 case "Grief Medal":
                     Core.FarmingLogger(req.Name, quant);
                     Core.EquipClass(ClassType.Farm);
-                    Adv.BestGear(RacialGearBoost.Elemental);
+                    //Adv.BestGear(RacialGearBoost.Elemental);
                     Core.RegisterQuests(7856, 7857);
                     while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                     {

@@ -1095,9 +1095,16 @@ public class CoreToD
 
         Story.KillQuest(5298, "hedgemaze", "Knight's Reflection");
 
-        Story.MapItemQuest(5299, "hedgemaze", 4679);
 
-        Story.KillQuest(5299, "hedgemaze", new[] { "Mirrored Shard", "Hedge Goblin", "Minotaur" });
+        Core.EquipClass(ClassType.Solo);
+        if (!Story.QuestProgression(5299))
+        {
+            Core.EnsureAccept(5299);
+            Core.HuntMonster("hedgemaze", "Mirrored Shard", "Mirror Shard Slain", 4);
+            Core.HuntMonsterMapID("hedgemaze", 48, "Hedge Goblin Slain", 4);
+            Core.HuntMonsterMapID("hedgemaze", 20, "Minotaur Slain", 3);
+            Story.MapItemQuest(5299, "hedgemaze", 4679);
+        }
 
         Story.KillQuest(5300, "hedgemaze", "Knight's Reflection");
 
@@ -1111,6 +1118,7 @@ public class CoreToD
 
         Story.MapItemQuest(5305, "hedgemaze", 4682);
 
+        Core.EquipClass(ClassType.Solo);
         Story.KillQuest(5306, "hedgemaze", "Minotaur Prime");
 
         Story.MapItemQuest(5307, "hedgemaze", 4683);
@@ -1128,6 +1136,7 @@ public class CoreToD
 
         Story.MapItemQuest(5311, "hedgemaze", 4686);
 
+        Core.EquipClass(ClassType.Solo);
         Story.KillQuest(5312, "hedgemaze", "Shattered Knight");
 
         Story.KillQuest(5313, "hedgemaze", "Resurrected Minotaur");
@@ -1137,6 +1146,8 @@ public class CoreToD
     {
         if (Core.isCompletedBefore(5332))
             return;
+
+        Core.Logger($"{Core.SoloClass}, {Core.FarmClass}");
 
         ShatterGlassMaze();
 
@@ -1148,14 +1159,20 @@ public class CoreToD
         Story.KillQuest(5314, "towerofmirrors", new[] { "Glassgoyle", "Glass Serpent" });
 
         // The Key To Success
-        Story.MapItemQuest(5315, "towerofmirrors", new[] { 4691, 4692 });
         Story.KillQuest(5315, "towerofmirrors", "Silver Elemental");
+        Story.MapItemQuest(5315, "towerofmirrors", new[] { 4691, 4692 });
 
         // Phanatics
         Story.KillQuest(5316, "towerofmirrors", new[] { "Phans", "Phans" });
 
         // But I Have A Backstage Pass!
-        Story.KillQuest(5317, "towerofmirrors", "Lothahnos the Reversed");
+        if (!Story.QuestProgression(5317))
+        {
+            Core.EquipClass(ClassType.Solo);
+            Core.EnsureAccept(5317);
+            Core.HuntMonsterMapID("towerofmirrors", 36, "Lathannos the Reversed Defeated");
+            Core.EnsureComplete(5317);
+        }
 
         // True Love
         Story.KillQuest(5318, "towerofmirrors", "Silver Elemental");
@@ -1165,37 +1182,73 @@ public class CoreToD
         Story.KillQuest(5319, "towerofmirrors", new[] { "Runway Wraith", "Runway Wraith", "Runway Wraith", "Runway Wraith" });
 
         // Now Turn to the Right
-        Story.KillQuest(5320, "towerofmirrors", "Lukcrisio the Buffed");
+        if (!Story.QuestProgression(5320))
+        {
+            Core.EquipClass(ClassType.Solo);
+            Core.EnsureAccept(5320);
+            Core.HuntMonsterMapID("towerofmirrors", 40, "Lukrisio the Buffed Defeated");
+            Core.EnsureComplete(5320);
+        }
 
         // Or Maybe THIS Is True Love
-        Story.MapItemQuest(5321, "towerofmirrors", new[] { 4688, 4694 });
         Story.KillQuest(5321, "towerofmirrors", "Silver Elemental");
+        Story.MapItemQuest(5321, "towerofmirrors", new[] { 4688, 4694 });
 
         // Those Harpies!
         Story.KillQuest(5322, "towerofmirrors", new[] { "Pageant Mom", "Pageant Mom" });
 
         // Drink your Go-Go Juice
-        Story.KillQuest(5323, "towerofmirrors", "Medeskar the Smudged");
+        if (!Story.QuestProgression(5323))
+        {
+            Core.EquipClass(ClassType.Solo);
+            Core.EnsureAccept(5323);
+            Core.HuntMonsterMapID("towerofmirrors", 45, "Mendeskar the Smudged Defeated");
+            Core.EnsureComplete(5323);
+        }
 
         // Oh Sure, Why Not
-        Story.MapItemQuest(5324, "towerofmirrors", new[] { 4689, 4695 });
         Story.KillQuest(5324, "towerofmirrors", "Silver Elemental");
+        Story.MapItemQuest(5324, "towerofmirrors", new[] { 4689, 4695 });
 
         // Behind the Scenes
-        Story.KillQuest(5325, "towerofmirrors", new[] { "Stage Tech", "Stage Tech" });
+        if (!Story.QuestProgression(5325))
+        {
+            Core.EnsureAccept(5325);
+            Core.HuntMonster("towerofmirrors", "Stage Tech", "Stage Tech Defeated", 9);
+            Core.HuntMonster("towerofmirrors", "Stage Tech", "Rope Ladder");
+            Core.EnsureComplete(5325);
+        }
 
         // In the Spotlight
-        Story.KillQuest(5326, "towerofmirrors", "Atticus the Warped");
+        if (!Story.QuestProgression(5326))
+        {
+            Core.EquipClass(ClassType.Solo);
+            Core.EnsureAccept(5326);
+            Core.HuntMonsterMapID("towerofmirrors", 49, "Atticus the Warped Defeated");
+            Core.EnsureComplete(5326);
+        }
 
         // Oh, I Give Up
-        Story.MapItemQuest(5327, "towerofmirrors", new[] { 4690, 4696 });
         Story.KillQuest(5327, "towerofmirrors", "Silver Elemental");
+        Story.MapItemQuest(5327, "towerofmirrors", new[] { 4690, 4696 });
 
         // We Gotta Wendi-GO
-        Story.KillQuest(5328, "towerofmirrors", new[] { "Sasquatch", "Sasquatch" });
+        if (!Story.QuestProgression(5328))
+        {
+            Core.EnsureAccept(5328);
+            Core.HuntMonster("towerofmirrors", "Sasquatch", "Sasquatches Defeated", 10);
+            Core.HuntMonster("towerofmirrors", "Sasquatch", "Tracking Tag", 5);
+            Core.EnsureComplete(5328);
+        }
 
         // Kick His- Wait, Did We Already Use That Pun?
-        Story.KillQuest(5329, "towerofmirrors", "Leofire the Shattered");
+        if (!Story.QuestProgression(5329))
+        {
+            Core.EquipClass(ClassType.Solo);
+            Core.EnsureAccept(5329);
+            Core.HuntMonsterMapID("towerofmirrors", 52, "Leofire the Shattered Defeated");
+            Core.EnsureComplete(5329);
+        }
 
         // Fiend Zoned
         Story.KillQuest(5330, "towerofmirrors", "Fervent Suitor");
@@ -1203,8 +1256,21 @@ public class CoreToD
         // Find Scarletta
         Story.MapItemQuest(5331, "towerofmirrors", 4697);
 
+        while (!Bot.ShouldExit && (Bot.Player.Cell == "Cut4" || Bot.Player.Cell == "Cut5"))
+        {
+            Core.JumpWait();
+            Bot.Sleep(Core.ActionDelay);
+        }
+
         // Defeat ... Wait. What?
-        Story.KillQuest(5332, "towerofmirrors", "Scarletta");
+        if (!Story.QuestProgression(5332))
+        {
+            Core.AddDrop("Blood Sorceress");
+            Core.EquipClass(ClassType.Solo);
+            Core.EnsureAccept(5332);
+            Core.HuntMonsterMapID("towerofmirrors", 32, "Defeat the Groglurk");
+            Core.EnsureComplete(5332);
+        }
     }
 
     #endregion

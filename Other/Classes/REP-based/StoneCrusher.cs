@@ -34,12 +34,16 @@ public class StoneCrusher
     public void GetSC(bool rankUpClass = true)
     {
         if (Core.CheckInventory("StoneCrusher"))
+        {
+            if (rankUpClass)
+                Adv.RankUpClass("StoneCrusher");
             return;
+        }
 
         LOC.Kimberly();
         Oak.doall();
         Farm.MythsongREP();
-        Adv.BuyItem("Gaiazor", 1210, "StoneCrusher");
+        Adv.BuyItem("Gaiazor", 1210, 33394, shopItemID: 4222);
 
         if (rankUpClass)
             Adv.RankUpClass("StoneCrusher");

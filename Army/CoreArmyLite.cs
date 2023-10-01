@@ -133,7 +133,7 @@ public class CoreArmyLite
     public string AggroMonPacket(params int[] MonsterMapIDs)
         => $"%xt%zm%aggroMon%{Bot.Map.RoomID}%{String.Join('%', MonsterMapIDs)}%";
 
-    public void SmartAggroMonStart(string map, params string[] monsters)
+    public void SmartAggroMonStart(string map, params string?[] monsters)
     {
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = getRoomNr();
@@ -437,9 +437,9 @@ public class CoreArmyLite
         Bot.Sleep(3500); //To make sure everyone attack at the same time, to avoid deaths
     }
 
-    public bool SellToSync(string item, int quant)
+    public bool SellToSync(string? item, int quant)
     {
-        if (Core.CheckInventory(item, quant))
+        if (Core.CheckInventory(item, quant) || item == null)
             return true;
         if (SellToSyncOn)
             Core.SellItem(item, 0, true);
@@ -653,6 +653,13 @@ public class CoreArmyLite
             // Try to go to the followed player
             if (!tryGoto(playerName))
             {
+                while (!Bot.ShouldExit && (Bot.Player.HasTarget || Bot.Player.InCombat))
+                {
+                    Bot.Combat.CancelTarget();
+                    Bot.Sleep(Core.ActionDelay);
+                    Core.JumpWait();
+                }
+
                 // Do these things if that fails
                 Core.Join("whitemap");
                 Core.Logger($"Could not find {playerName}. Check if \"{playerName}\" is in the same server with you.", "tryGoto");
@@ -698,6 +705,7 @@ public class CoreArmyLite
             // Attack any monster that is alive.
             if (!Bot.Combat.StopAttacking && Bot.Monsters.CurrentMonsters.Count(m => Core.IsMonsterAlive(m)) > 0)
                 PriorityAttack("*");
+
             Core.Rest();
             Bot.Sleep(Core.ActionDelay);
         }
@@ -840,8 +848,35 @@ public class CoreArmyLite
             "yoshino"
         };
 
+        var levelLockedMaps = new[]
+        {
+            new { Map = "icestormunder", LevelRequired = 75 },
+            new { Map = "icewing", LevelRequired = 75 },
+            new { Map = "battlegrounde", LevelRequired = 61 }
+        };
+
         int maptry = 1;
-        int mapCount = Core.IsMember ? (NonMemMaps.Count() + MemMaps.Count()) : NonMemMaps.Count();
+        int mapCount = Core.IsMember ? NonMemMaps.Length + MemMaps.Length : NonMemMaps.Length;
+
+        foreach (var mapInfo in levelLockedMaps)
+        {
+            if (Bot.Player.Level < mapInfo.LevelRequired)
+            {
+                Core.Logger($"Not a high enough level.\n" +
+                $"required: {mapInfo.LevelRequired}, your's: {Bot.Player.Level}");
+                continue;
+            }
+
+            Core.Logger($"[{(maptry.ToString().Length == 1 ? "0" : "")}{maptry++}/{mapCount}] Searching for {b_playerName} in /{mapInfo.Map}", "LockedZoneHandler");
+            Core.Join(mapInfo.Map);
+
+            if (!Bot.Map.PlayerExists(b_playerName!))
+                continue;
+
+            tryGoto(b_playerName!);
+            Core.Logger($"[{((maptry - 1).ToString().Length == 1 ? "0" : "")}{maptry - 1}/{mapCount}] Found {b_playerName} in /{mapInfo.Map}", "LockedZoneHandler");
+        }
+
 
         foreach (string map in EventMaps)
         {

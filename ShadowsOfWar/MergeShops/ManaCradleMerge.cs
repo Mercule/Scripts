@@ -40,7 +40,7 @@ public class ManaCradleMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         SoW.CompleteCoreSoW();
 
@@ -62,7 +62,7 @@ public class ManaCradleMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -100,7 +100,7 @@ public class ManaCradleMerge
                         Bot.Skills.StartAdvanced(Core.CheckInventory("Yami no Ronin") ? "Yami no Ronin" : "Dragon of Time", true, ClassUseMode.Solo);
                     else Core.EquipClass(ClassType.Solo);
                     Core.AddDrop(SoW.MalgorDrops.Concat(SoW.MainyuDrops).ToArray());
-                    Core.HuntMonster("manacradle", "The Mainyu", req.Name);
+                    Core.HuntMonster("manacradle", "The Mainyu", req.Name, isTemp: false);
                     break;
 
             }

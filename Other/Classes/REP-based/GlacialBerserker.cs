@@ -31,13 +31,15 @@ public class GlacialBerserker
     public void GetGB(bool rankUpClass = true)
     {
         if (Core.CheckInventory("Glacial Berserker"))
+        {
+            if (rankUpClass)
+                Adv.RankUpClass("Glacial Berserker");
             return;
+        }
 
         Glacera.IceWindPass();
-        Adv.BestGear(GenericGearBoost.rep);
-        Farm.GlaceraREP();
-
-        Core.BuyItem("icewindpass", 1339, 38084);
+        //Adv.BestGear(GenericGearBoost.rep);
+        Adv.BuyItem("icewindpass", 1339, 38084, shopItemID: 22266);
 
         if (rankUpClass)
             Adv.RankUpClass("Glacial Berserker");

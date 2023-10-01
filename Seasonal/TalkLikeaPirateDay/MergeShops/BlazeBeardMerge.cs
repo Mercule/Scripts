@@ -1,7 +1,7 @@
 /*
 name: Blazebeard Merge
-description: This will farm the Blazebeard Merge items.
-tags: farm, blazebeard, merge, pirate
+description: This bot will farm the items belonging to the selected mode for the Blazebeard Merge [108] in /blazebeard
+tags: tlapd,talk-like-a-pirate-day,seasonal,blazebeard, merge, blazebeard, crimson, pirate, mage, tricorn, weapons, side, cutlass, skull, harpoon, flintlock, spellbook, cutlasses, alpha, ferret, golden, explorer, pistol, great, pistols, platinum
 */
 //cs_include Scripts/CoreBots.cs
 //cs_include Scripts/CoreFarms.cs
@@ -39,7 +39,7 @@ public class BlazeBeardMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("blazebeard", 108, findIngredients, buyOnlyThis, buyMode: buyMode);
@@ -59,7 +59,7 @@ public class BlazeBeardMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion

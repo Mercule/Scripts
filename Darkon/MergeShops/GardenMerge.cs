@@ -37,7 +37,7 @@ public class GardenMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("garden", 1831, findIngredients, buyOnlyThis, buyMode: buyMode);
@@ -57,7 +57,7 @@ public class GardenMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -90,19 +90,20 @@ public class GardenMerge
                                 Core.Jump("r5", "Left");
                                 Bot.Sleep(Core.ActionDelay);
                             }
-                            if (Bot.Map.CellPlayers.Count >= 3)
-                                EnoughPeople = true;
-                            else EnoughPeople = false;
+
+                            EnoughPeople = Bot.Map.CellPlayers?.Count >= 3;
+
+                            if (!EnoughPeople && Core.IsMember)
+                                Core.HuntMonster("ultravoid", "Ultra Kathool", "Ingredients?", 22, false, publicRoom: true);
+                            else
+                                Adv.KillUltra("doomvault", "r5", "Left", "Binky", "Ingredients?", 22, false, publicRoom: true);
+
+                            Bot.Wait.ForPickup("Darkon's Receipt");
                         }
-
-                        if (!EnoughPeople && Core.IsMember)
-                            Core.HuntMonster("ultravoid", "Ultra Kathool", "Ingredients?", 22, false, publicRoom: true, log: false);
-                        else Adv.KillUltra("doomvault", "r5", "Left", "Binky", "Ingredients?", 22, false, publicRoom: true, log: false);
-
-                        Bot.Wait.ForPickup("Darkon's Receipt");
                     }
                     Core.CancelRegisteredQuests();
                     break;
+
 
                 case "Darkon's Debris 1935.1":
                 case "Darkon's Debris 66 Angel Wing":

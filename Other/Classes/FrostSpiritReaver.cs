@@ -8,6 +8,7 @@ tags: null
 //cs_include Scripts/CoreStory.cs
 //cs_include Scripts/CoreAdvanced.cs
 //cs_include Scripts/Story/Glacera.cs
+//cs_include Scripts/CoreDailies.cs
 using Skua.Core.Interfaces;
 
 public class FrostSpiritReaver
@@ -16,6 +17,8 @@ public class FrostSpiritReaver
     public CoreBots Core => CoreBots.Instance;
     public CoreAdvanced Adv = new();
     public GlaceraStory Glacera = new();
+    public CoreFarms Farm = new();
+    public CoreDailies Dailies = new();
 
     public void ScriptMain(IScriptInterface bot)
     {
@@ -32,6 +35,15 @@ public class FrostSpiritReaver
             return;
 
         Glacera.DoAll();
+        Farm.GlaceraREP();
+
+        Dailies.Cryomancer();
+        if (!Core.CheckInventory("Cryomancer"))
+        {
+            Core.Logger("Cryomancer Required for \"Frost Sigil\" for \"IceNinth\", Comeback tomarrow.");
+            return;
+        }
+
 
         if (!Core.CheckInventory("Envoy of Kyanos"))
         {
@@ -71,14 +83,31 @@ public class FrostSpiritReaver
         Core.AddDrop("Ice-Ninth", "Ice Diamond");
         Core.FarmingLogger("Ice-Ninth", quant);
 
-        //Quest Prereqs.
         //////////////////////////////////////////////
+        //////////////////////////////////////////////
+        #region "Quest Prerequisites 
+
+        if (!Core.CheckInventory("25464") && Core.CheckInventory(new[] { 27437, 27525 }, any: true))
+        {
+            //Frost Sigil
+            Core.BuyItem("icedungeon", Core.CheckInventory(27437) ? 2294 : 2295, 25464, shopItemID: Core.CheckInventory(27437) ? 48001 : 48002);
+            Core.ToBank(27437, 27525);
+        }
+
+        Core.RegisterQuests(3955);
+        while (!Bot.ShouldExit && !Core.CheckInventory("Flame of Courage", 25))
+        {
+            Core.AddDrop("Flame of Courage");
+            Core.HuntMonster("frozenruins", "Frost Invader", "Spark of Courage", log: false);
+            Bot.Wait.ForPickup("Flame of Courage");
+        }
+        Core.CancelRegisteredQuests();
+        Core.ToBank("Frozen Tower Merge Token");
+
+        //cryomancer unbank
         if (!Core.CheckInventory("Fallen Scythe of Vengeance"))
         {
             Core.Logger("Getting the quest item requirements for \"Cold Hearted\"");
-            Core.AddDrop("Flame of Courage");
-            //Frost Sigil
-            Core.BuyItem("icedungeon", 2295, 25464, shopItemID: 25464);
 
             Core.HuntMonster("Northstar", "Karok the Fallen", "Karok's Glaceran Gem", isTemp: false);
             Adv.BuyItem("Glacera", 1055, "Scythe of Vengeance");
@@ -86,7 +115,11 @@ public class FrostSpiritReaver
             Adv.BuyItem("Glacera", 1055, "Frigid Scythe of Vengeance");
             Adv.BuyItem("Glacera", 1055, "Fallen Scythe of Vengeance");
         }
+
+        #endregion "Quest Prerequisites 
         //////////////////////////////////////////////
+        //////////////////////////////////////////////
+
 
         Core.RegisterQuests(7920);
         while (!Bot.ShouldExit && !Core.CheckInventory("Ice-Ninth", quant))
@@ -103,6 +136,8 @@ public class FrostSpiritReaver
             Bot.Wait.ForPickup("Ice-Ninth");
         }
         Core.CancelRegisteredQuests();
+        Core.ToBank(Core.QuestRewards(7920));
+        Core.Unbank("Ice-Ninth");
     }
 
     //Cold Blooded
@@ -139,6 +174,8 @@ public class FrostSpiritReaver
             Bot.Wait.ForPickup("Glaceran Attunement");
         }
         Core.CancelRegisteredQuests();
+        Core.ToBank(Core.QuestRewards(7921));
+        Core.Unbank("Glaceran Attunement");
     }
 
     public void Tokens(int Token1 = 300, int Token2 = 300, int Token3 = 300, int Token4 = 300)

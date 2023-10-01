@@ -200,16 +200,16 @@ public class DoTArmy
         Core.BankingBlackList.AddRange(QuestRewards);
         Core.SetOptions(disableClassSwap: true);
 
-        DoT(Bot.Config.Get<bool>("sellToSync"));
+        DoT(Bot.Config!.Get<bool>("sellToSync"));
 
         Core.SetOptions(false);
     }
 
 
-    public void DoT(bool rankUpClass = true, bool doExtra = true)
+    public void DoT(bool doExtra = true)
     {
-        if ((!doExtra && Core.CheckInventory("Dragon of Time")) || (doExtra && Core.CheckInventory(QuestRewards, toInv: false)))
-            return;
+        // if ((!doExtra && Core.CheckInventory("Dragon of Time")) || (doExtra && Core.CheckInventory(QuestRewards, toInv: false)))
+        //     return;
 
         Core.OneTimeMessage("Only for army", "This is intended for use with an army, not for solo players.");
 
@@ -258,285 +258,285 @@ public class DoTArmy
 
     public void DoQuest1()
     {
-        if (!Core.isCompletedBefore(7716) || !Core.CheckInventory(QuestRewards[^2], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[0..2], toInv: false))
+            foreach (string reward in QuestRewards[0..2])
+                Army.waitForParty("whitemap", reward);
 
-        // Acquiring Ancient Secrets 7716
-        Core.EnsureAccept(7716);
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[0..2], toInv: false))
+        {
+            // Acquiring Ancient Secrets 7716
+            Core.EnsureAccept(7716);
 
-        Bot.Quests.UpdateQuest(4614);
-        Army.SellToSync("Lost Hieroglyphic", 30);
-        ArmyHunt("mummies", new[] { "Mummy" }, "Lost Hieroglyphic", ClassType.Solo, false, 30);
+            Bot.Quests.UpdateQuest(4614);
+            Core.EquipClass(ClassType.Farm);
+            ArmyHunt("mummies", new[] { "Mummy" }, "Lost Hieroglyphic", ClassType.Solo, false, 30);
 
-        Army.SellToSync("Historia Page", 100);
-        ArmyHunt("timelibrary", new[] { "Training Globe", "Tog", "Moglin Ghost" }, "Historia Page", ClassType.Solo, false, 100);
+            ArmyHunt("timelibrary", new[] { "Training Globe", "Tog", "Moglin Ghost" }, "Historia Page", ClassType.Solo, false, 100);
 
-        Army.SellToSync("Frost King's Story", 1);
-        ArmyHunt("kingcoal", new[] { "Frost King" }, "Frost King's Story", ClassType.Solo);
+            ArmyHunt("kingcoal", new[] { "Frost King" }, "Frost King's Story", ClassType.Solo);
 
-        Army.SellToSync("Your Own Memories", 1);
-        Core.KillMonster("baconcatyou", "Enter", "Spawn", "*", "Your Own Memories", isTemp: false);
+            Core.EquipClass(ClassType.Solo);
+            Core.KillMonster("baconcatyou", "Enter", "Spawn", "*", "Your Own Memories", isTemp: false);
 
-        Army.SellToSync("Myths of Lore", 1);
-        Core.BuyItem("librarium", 651, "Myths of Lore");
+            Core.BuyItem("librarium", 651, "Myths of Lore");
 
-        Core.EnsureComplete(7716);
-        Core.Logger($"Quest 1: 🖕");
-        Bot.Wait.ForPickup("*");
+            Core.EnsureComplete(7716);
+            Core.Logger($"Quest 1: 🖕");
+            Bot.Wait.ForPickup("*");
+        }
     }
 
     public void DoQuest2()
     {
-        if (!Core.isCompletedBefore(7717) || !Core.CheckInventory(QuestRewards[^5], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[3..5], toInv: false))
+            foreach (string reward in QuestRewards[3..5])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7717);
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[3..5], toInv: false))
+        {
+            Core.EnsureAccept(7717);
 
-        Army.SellToSync("Desoloth's Destructive Aura", 1);
-        ArmyHunt("dragonchallenge", new[] { "Desoloth the Final" }, "Desoloth's Destructive Aura", ClassType.Solo);
+            Core.EquipClass(ClassType.Solo);
+            ArmyHunt("dragonchallenge", new[] { "Desoloth the Final" }, "Desoloth's Destructive Aura", ClassType.Solo);
 
-        Bot.Quests.UpdateQuest(899);
-        Army.SellToSync("Nythera's Patience", 1);
-        ArmyHunt("blindingsnow", new[] { "Nythera" }, "Nythera's Patience", ClassType.Solo);
-        Core.AddDrop("Key of Greed");
+            Bot.Quests.UpdateQuest(899);
+            ArmyHunt("blindingsnow", new[] { "Nythera" }, "Nythera's Patience", ClassType.Solo);
 
-        Army.SellToSync("Goregold's Luck", 1);
-        ArmyHunt("greed", new[] { "Goregold" }, "Goregold's Luck", ClassType.Solo);
+            Core.AddDrop("Key of Greed");
+            ArmyHunt("greed", new[] { "Goregold" }, "Goregold's Luck", ClassType.Solo);
 
-        Army.SellToSync("Victorious's Dignity", 1);
-        ArmyHunt("darkplane", new[] { "Victorious" }, "Victorious's Dignity", ClassType.Solo);
+            ArmyHunt("darkplane", new[] { "Victorious" }, "Victorious's Dignity", ClassType.Solo);
 
-        Army.SellToSync("Trigoras's Tenacity", 3);
-        ArmyHunt("trigoras", new[] { "Trigoras" }, "Trigoras's Tenacity", ClassType.Solo, false, 3);
+            ArmyHunt("trigoras", new[] { "Trigoras" }, "Trigoras's Tenacity", ClassType.Solo, false, 3);
 
-        Core.EnsureComplete(7717);
-        Core.Logger($"Quest 2: 🖕");
-        Bot.Wait.ForPickup("*");
+            Core.EnsureComplete(7717);
+            Core.Logger($"Quest 2: 🖕");
+            Bot.Wait.ForPickup("*");
+        }
     }
 
     public void DoQuest3()
     {
-        if (!Core.isCompletedBefore(7718) || !Core.CheckInventory(QuestRewards[^7], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[6..7], toInv: false))
+            foreach (string reward in QuestRewards[6..7])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7718);
-
-        Army.SellToSync("item", 1);
-        ArmyHunt("underworld", new[] { "Laken" }, "Cross-Era Stabilizer", ClassType.Solo);
-
-        if (!Core.CheckInventory("Chronomancer's Codex"))
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[6..7], toInv: false))
         {
-            ArmyHunt("mqlesson", new[] { "Dragonoid" }, "Dragonoid of Hours", ClassType.Solo);
-            ArmyHunt("timespace", new[] { "Chaos Lord Iadoa" }, "Chronomancer's Codex", ClassType.Solo);
+            Core.EnsureAccept(7718);
+
+            Core.EquipClass(ClassType.Solo);
+            ArmyHunt("underworld", new[] { "Laken" }, "Cross-Era Stabilizer", ClassType.Solo);
+
+            if (!Core.CheckInventory("Chronomancer's Codex"))
+            {
+                Core.EquipClass(ClassType.Solo);
+                ArmyHunt("mqlesson", new[] { "Dragonoid" }, "Dragonoid of Hours", ClassType.Solo);
+                Core.EquipClass(ClassType.Solo);
+                ArmyHunt("timespace", new[] { "Chaos Lord Iadoa" }, "Chronomancer's Codex", ClassType.Solo);
+            }
+
+            ArmyHunt("arena", new[] { "Timestream Rider" }, "Timestream String", ClassType.Solo, false, 100);
+
+            Core.EnsureComplete(7718);
+            Core.Logger($"Quest 3: 🖕");
+            Bot.Wait.ForPickup("*");
         }
-
-        Army.SellToSync("Timestream String", 100);
-        ArmyHunt("arena", new[] { "Timestream Rider" }, "Timestream String", ClassType.Solo, false, 100);
-
-        Core.EnsureComplete(7718);
-        Core.Logger($"Quest 3: 🖕");
-        Bot.Wait.ForPickup("*");
-        Core.ToBank("Dragon of Time FangBlade", "Dual Dragon of Time FangBlades");
     }
 
     public void DoQuest4()
     {
-        if (!Core.isCompletedBefore(7719) || !Core.CheckInventory(QuestRewards[^8], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[7..8], toInv: false))
+            foreach (string reward in QuestRewards[7..8])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7719);
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[7..8], toInv: false))
+        {
+            Core.EnsureAccept(7719);
 
-        Army.SellToSync("Time Loop Broken", 1);
-        ArmyHunt("cathedral", new[] { "Incarnation of Time" }, "Time Loop Broken", ClassType.Solo);
+            Core.EquipClass(ClassType.Solo);
+            ArmyHunt("cathedral", new[] { "Incarnation of Time" }, "Time Loop Broken", ClassType.Solo);
 
-        Army.SellToSync("Is This a Wormhole?", 1);
-        ArmyHunt("ubear", new[] { "Cornholio" }, "Is This a Wormhole?", ClassType.Solo);
+            Core.EquipClass(ClassType.Solo);
+            ArmyHunt("ubear", new[] { "Cornholio" }, "Is This a Wormhole?", ClassType.Solo);
 
-        Army.SellToSync("nomaly Silenced", 100);
-        ArmyHunt("portalwar", new[] { "Chronorysa", "Tempus Larva", "Time Wraith" }, "Anomaly Silenced", ClassType.Solo, false, 100);
+            Core.EquipClass(ClassType.Solo);
+            ArmyHunt("portalwar", new[] { "Chronorysa", "Tempus Larva", "Time Wraith" }, "Anomaly Silenced", ClassType.Solo, false, 100);
 
-        Army.SellToSync("Chronolord Stopped", 50);
-        ArmyHunt("portalmaze", new[] { "ChronoLord" }, "Chronolord Stopped", ClassType.Solo, false, 50);
+            Core.EquipClass(ClassType.Solo);
+            ArmyHunt("portalmaze", new[] { "ChronoLord" }, "Chronolord Stopped", ClassType.Solo, false, 50);
 
-        Core.EnsureComplete(7719);
-        Core.Logger($"Quest 4: 🖕");
-        Bot.Wait.ForPickup("*");
+            Core.EnsureComplete(7719);
+            Core.Logger($"Quest 4: 🖕");
+            Bot.Wait.ForPickup("*");
+        }
     }
 
     public void DoQuest5()
     {
-        if (!Core.isCompletedBefore(7720) || !Core.CheckInventory(QuestRewards[^10], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[9..10], toInv: false))
+            foreach (string reward in QuestRewards[9..10])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7720);
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[9..10], toInv: false))
+        {
+            Core.EnsureAccept(7720);
 
-        Army.SellToSync("Dimensional Dragon Portal", 2);
-        ArmyHunt("lairdefend", new[] { "Dragon Summoner" }, "Dimensional Dragon Portal", ClassType.Solo, false, 2);
+            ArmyHunt("lairdefend", new[] { "Dragon Summoner" }, "Dimensional Dragon Portal", ClassType.Solo, false, 2);
 
-        Army.SellToSync("Brutal Slash Studied", 10);
-        ArmyHunt("bosschallenge", new[] { "Grievous Inbunche" }, "Brutal Slash Studied", ClassType.Solo, false, 10);
+            ArmyHunt("bosschallenge", new[] { "Grievous Inbunche" }, "Brutal Slash Studied", ClassType.Solo, false, 10);
 
-        Army.SellToSync("Epic Hydra Fang", 125);
-        ArmyHunt("hydrachallenge", new[] { "Hydra Head 90" }, "Epic Hydra Fang", ClassType.Solo, false, 125);
-        Core.EnsureComplete(7720);
-        Core.Logger($"Quest 5: 🖕");
-        Bot.Wait.ForPickup("*");
+            ArmyHunt("hydrachallenge", new[] { "Hydra Head 90" }, "Epic Hydra Fang", ClassType.Solo, false, 125);
+            Core.EnsureComplete(7720);
+            Core.Logger($"Quest 5: 🖕");
+            Bot.Wait.ForPickup("*");
+        }
     }
 
     public void DoQuest6()
     {
-        if (!Core.isCompletedBefore(7721) || !Core.CheckInventory(QuestRewards[^12], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[11..12], toInv: false))
+            foreach (string reward in QuestRewards[11..12])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7721);
-
-        Army.SellToSync("Sword of Voids", 1);
-        ArmyHunt("ivoliss", new[] { "Ivoliss" }, "Sword of Voids", ClassType.Solo);
-
-        Army.SellToSync("Semiramis Feather", 1);
-        if (!Core.CheckInventory("Semiramis Feather"))
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[11..12], toInv: false))
         {
-            Core.AddDrop("Semiramis Feather");
-            // Take Down Terrane 6286
-            Core.EnsureAccept(6286);
-            ArmyHunt("guardiantree", new[] { "Terrane" }, "Terrane Defeated", ClassType.Solo, isTemp: true);
-            Core.EnsureComplete(6286);
-            Bot.Wait.ForPickup("Semiramis Feather");
+            Core.EnsureAccept(7721);
+
+            ArmyHunt("ivoliss", new[] { "Ivoliss" }, "Sword of Voids", ClassType.Solo);
+
+            if (!Core.CheckInventory("Semiramis Feather"))
+            {
+                Core.AddDrop("Semiramis Feather");
+                // Take Down Terrane 6286
+                Core.EnsureAccept(6286);
+                ArmyHunt("guardiantree", new[] { "Terrane" }, "Terrane Defeated", ClassType.Solo, isTemp: true);
+                Core.EnsureComplete(6286);
+                Bot.Wait.ForPickup("Semiramis Feather");
+            }
+
+            ArmyHunt("aqw3d", new[] { "Nightlocke Axe", "Nightlocke Blade", "Nightlocke Staff" }, "Cross-Dimensional Weapons", ClassType.Solo, false, 300);
+
+            if (!Core.CheckInventory("Starlight Singularity"))
+            {
+                Core.AddDrop("Starlight Singularity");
+                // Serpent of the Stars 5186
+                Core.EnsureAccept(5186);
+                ArmyHunt("whitehole", new[] { "Mehensi Serpent" }, "Mehen Slain", ClassType.Solo, isTemp: true);
+                Core.EnsureComplete(5186);
+                Bot.Wait.ForPickup("Starlight Singularity");
+            }
+
+            Core.BuyItem("collection", 325, "Collectible Collector");
+            Bot.Wait.ForPickup("Collectible Collector");
+
+            Core.EnsureComplete(7721);
+
+            Core.Logger($"Quest 6: 🖕");
+            Bot.Wait.ForPickup("*");
         }
-
-        Army.SellToSync("Cross-Dimensional Weapons", 300);
-        ArmyHunt("aqw3d", new[] { "Nightlocke Axe", "Nightlocke Blade", "Nightlocke Staff" }, "Cross-Dimensional Weapons", ClassType.Solo, false, 300);
-
-        Army.SellToSync("Starlight Singularity", 1);
-        if (!Core.CheckInventory("Starlight Singularity"))
-        {
-            Core.AddDrop("Starlight Singularity");
-            // Serpent of the Stars 5186
-            Core.EnsureAccept(5186);
-            ArmyHunt("whitehole", new[] { "Mehensi Serpent" }, "Mehen Slain", ClassType.Solo, isTemp: true);
-            Core.EnsureComplete(5186);
-            Bot.Wait.ForPickup("Starlight Singularity");
-        }
-
-        Army.SellToSync("Collectible Collector", 1);
-        Core.BuyItem("collection", 325, "Collectible Collector");
-        Bot.Wait.ForPickup("Collectible Collector");
-
-        Core.EnsureComplete(7721);
-
-        Core.Logger($"Quest 6: 🖕");
-        Bot.Wait.ForPickup("*");
     }
 
     public void DoQuest7()
     {
-        if (!Core.isCompletedBefore(7722) || !Core.CheckInventory(QuestRewards[^14], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[13..14], toInv: false))
+            foreach (string reward in QuestRewards[13..14])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7722);
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[13..14], toInv: false))
+        {
+            Core.EnsureAccept(7722);
 
-        Army.SellToSync("Unyielding Slime", 300);
-        ArmyHunt("moonlab", new[] { "Slime Mold" }, "Unyielding Slime", ClassType.Farm, false, 300);
+            ArmyHunt("moonlab", new[] { "Slime Mold" }, "Unyielding Slime", ClassType.Farm, false, 300);
 
-        Army.SellToSync("Omnipotent Cells", 20);
-        ArmyHunt("bosschallenge", new[] { "Mutated Void Dragon" }, "Omnipotent Cells", ClassType.Solo, false, 20);
+            ArmyHunt("bosschallenge", new[] { "Mutated Void Dragon" }, "Omnipotent Cells", ClassType.Solo, false, 20);
 
-        Army.SellToSync("Dragon's Plasma", 20);
-        ArmyHunt("underlair", new[] { "ArchFiend Dragonlord" }, "Dragon's Plasma", ClassType.Solo, false, 20);
+            ArmyHunt("underlair", new[] { "ArchFiend Dragonlord" }, "Dragon's Plasma", ClassType.Solo, false, 20);
 
-        Army.SellToSync("Chaotic Invertebrae", 20);
-        ArmyHunt("chaoskraken", new[] { "Chaos Kraken" }, "Chaotic Invertebrae", ClassType.Solo, false, 20);
-        Bot.Quests.UpdateQuest(9, 159);
+            ArmyHunt("chaoskraken", new[] { "Chaos Kraken" }, "Chaotic Invertebrae", ClassType.Solo, false, 20);
+            Bot.Quests.UpdateQuest(9, 159);
 
-        Army.SellToSync("Cryostatic Essence", 20);
-        ArmyHunt("towerofdoom9", new[] { "Dread Fang" }, "Cryostatic Essence", ClassType.Farm, false, 20);
+            ArmyHunt("towerofdoom9", new[] { "Dread Fang" }, "Cryostatic Essence", ClassType.Farm, false, 20);
 
-        Army.SellToSync("Salvaged Chaos Dragon Biomass", 20);
-        ArmyHunt("castleroof", new[] { "Ultra Chaos Dragon" }, "Salvaged Chaos Dragon Biomass", ClassType.Solo, false, 20);
+            ArmyHunt("castleroof", new[] { "Ultra Chaos Dragon" }, "Salvaged Chaos Dragon Biomass", ClassType.Solo, false, 20);
 
-        Core.EnsureComplete(7722);
-        Core.Logger($"Quest 7: 🖕");
-        Bot.Wait.ForPickup("*");
+            Core.EnsureComplete(7722);
+            Core.Logger($"Quest 7: 🖕");
+            Bot.Wait.ForPickup("*");
+        }
     }
 
     public void DoQuest8()
     {
-        if (!Core.isCompletedBefore(7723) || !Core.CheckInventory(QuestRewards[^15], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[14..15], toInv: false))
+            foreach (string reward in QuestRewards[14..15])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[14..15], toInv: false))
+        {
 
-        Core.EnsureAccept(7723);
+            Core.EnsureAccept(7723);
 
-        Army.SellToSync("Fire Essence", 3000);
-        ArmyHunt("volcano", new[] { "Fire Imp" }, "Fire Essence", ClassType.Farm, false, 3000);
+            ArmyHunt("volcano", new[] { "Fire Imp" }, "Fire Essence", ClassType.Farm, false, 3000);
 
-        Army.SellToSync("Akriloth's Flametongue", 100);
-        ArmyHunt("charredplains", new[] { "Akriloth" }, "Akriloth's Flametongue", ClassType.Solo, false, 100);
+            ArmyHunt("charredplains", new[] { "Akriloth" }, "Akriloth's Flametongue", ClassType.Solo, false, 100);
 
-        Army.SellToSync("Immortal Embers", 50);
-        ArmyHunt("ultraphedra", new[] { "Ultra Phedra" }, "Immortal Embers", ClassType.Solo, false, 50);
+            ArmyHunt("ultraphedra", new[] { "Ultra Phedra" }, "Immortal Embers", ClassType.Solo, false, 50);
 
-        Army.SellToSync("Ashes from the Void Realm", 50);
-        ArmyHunt("thevoid", new[] { "Reaper" }, "Ashes from the Void Realm", ClassType.Solo, false, 50);
+            ArmyHunt("thevoid", new[] { "Reaper" }, "Ashes from the Void Realm", ClassType.Solo, false, 50);
 
-        Core.EnsureComplete(7723);
-        Core.Logger($"Quest 8: 🖕");
-        Bot.Wait.ForPickup("*");
+            Core.EnsureComplete(7723);
+            Core.Logger($"Quest 8: 🖕");
+            Bot.Wait.ForPickup("*");
+        }
     }
 
     public void DoQuest9()
     {
-        if (!Core.isCompletedBefore(7724) || !Core.CheckInventory(QuestRewards[^19], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[16..19], toInv: false))
+            foreach (string reward in QuestRewards[16..19])
+                Army.waitForParty("whitemap", reward);
 
-        else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
-        Core.EnsureAccept(7724);
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[16..19], toInv: false))
+        {
+            Core.EnsureAccept(7724);
 
-        Bot.Quests.UpdateQuest(3880);
-        Army.SellToSync("Conquered Past", 1);
-        ArmyHunt("chaoslord", 1770, "Conquered Past", ClassType.Solo, false);
+            Bot.Quests.UpdateQuest(3880);
+            ArmyHunt("chaoslord", 1770, "Conquered Past", ClassType.Solo, false);
 
-        Bot.Quests.UpdateQuest(10, 159);
-        Army.SellToSync("Slugbutter Trophy", 100);
-        ArmyHunt("towerofdoom10", new[] { "Slugbutter" }, "Slugbutter Trophy", ClassType.Solo, false, 100);
+            Bot.Quests.UpdateQuest(10, 159);
+            ArmyHunt("towerofdoom10", new[] { "Slugbutter" }, "Slugbutter Trophy", ClassType.Solo, false, 100);
 
-        Army.SellToSync("Icewing's Laurel", 30);
-        ArmyHunt("icestormarena", new[] { "Warlord Icewing" }, "Icewing's Laurel", ClassType.Solo, false, 30);
+            ArmyHunt("icewing", new[] { "Warlord Icewing" }, "Icewing's Laurel", ClassType.Solo, false, 30);
 
-        Core.EnsureComplete(7724);
-        Core.Logger($"Quest 9: 🖕");
-        Bot.Wait.ForPickup("Dragon of Time");
-        Adv.RankUpClass("Dragon of Time");
+            Core.EnsureComplete(7724);
+            Core.Logger($"Quest 9: 🖕");
+            Bot.Wait.ForPickup("Dragon of Time");
+            Adv.RankUpClass("Dragon of Time");
+        }
     }
 
     public void DoQuest10()
     {
-        if (!Core.isCompletedBefore(7725) || !Core.CheckInventory(QuestRewards[^22], toInv: false))
-            Core.ButlerOnMe();
+        if (Core.CheckInventory(QuestRewards[20..22], toInv: false))
+            foreach (string reward in QuestRewards[20..22])
+                Army.waitForParty("whitemap", reward);
 
         else Core.Logger("Quest already complete / Items owned, butlering[hopefully]");
 
         List<string> PreQuestInv = Bot.Inventory.Items.Select(x => x.Name).ToList();
 
-        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards, toInv: false))
+        while (!Bot.ShouldExit && !Core.CheckInventory(QuestRewards[20..22], toInv: false))
         {
             Core.EnsureAccept(7725);
 
-            Army.SellToSync("Borgar", 1);
             if (!Core.CheckInventory("Borgar"))
             {
                 Core.AddDrop("Burger Buns");
@@ -608,25 +608,52 @@ public class DoTArmy
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = Army.getRoomNr();
 
-        if (Bot.Config.Get<bool>("sellToSync"))
+        if (Bot.Config!.Get<bool>("sellToSync"))
             Army.SellToSync(item, quant);
 
         Core.AddDrop(item);
+        Army.waitForParty(map);
 
         Core.EquipClass(classType);
-        Army.waitForParty(map, item);
         Core.FarmingLogger(item, quant);
 
         Army.SmartAggroMonStart(map, monsters);
 
         while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
         {
-            if (monsters == new[] { "Tigoras" })
+            if (monsters == new[] { "Hydra Head 90" })
+            {
+                Core.Logger("Swapping classes to 1 of the 3\n" +
+                ">> so that we can be sure you arent doing multi targeting\n" +
+                ">> as itd fuck it up");
+                
+                foreach (string Class in new[] { "StoneCrusher", "Lord of Order", "Void Highlord" })
+                    if (Core.CheckInventory(Class))
+                        Core.Equip(Class);
+
+                while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
+                    Bot.Combat.Attack("*");
+                break;
+            }
+
+            else if (monsters == new[] { "Tigoras" })
+            {
                 Core.KillTrigoras(item, quant, 1, isTemp);
-            else Bot.Combat.Attack("*");
+                break;
+            }
+
+            else if (monsters != new[] { "Tigoras" } || monsters != new[] { "Hydra Head 90" })
+                Bot.Combat.Attack("*");
         }
-        Army.AggroMonStop(true);
         Core.JumpWait();
+        Army.AggroMonStop(true);
+
+        while (!Bot.ShouldExit && Bot.Player.InCombat)
+        {
+            Core.JumpWait();
+            Bot.Sleep(2500);
+        }
+        Army.waitForParty(map, item);
     }
 
     void ArmyHunt(string map, int monsterID, string item, ClassType classType, bool isTemp = false, int quant = 1)
@@ -634,23 +661,31 @@ public class DoTArmy
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = Army.getRoomNr();
 
-        Monster monster = Bot.Monsters.CurrentMonsters?.Find(m => m.ID == monsterID);
+        Monster? monster = Bot.Monsters.CurrentMonsters?.Find(m => m.ID == monsterID);
 
-        if (Bot.Config.Get<bool>("sellToSync"))
+        if (Bot.Config!.Get<bool>("sellToSync"))
             Army.SellToSync(item, quant);
 
         Core.AddDrop(item);
+        Army.waitForParty(map);
 
-        Army.waitForParty(map, item);
+        Core.EquipClass(classType);
         Core.FarmingLogger(item, quant);
 
-        Army.SmartAggroMonStart(map, monster.ToString());
+        Army.SmartAggroMonStart(map, monster!.ToString());
 
         while (!Bot.ShouldExit && !Core.CheckInventory(item, quant))
             Bot.Combat.Attack("*");
 
-        Army.AggroMonStop(true);
         Core.JumpWait();
+        Army.AggroMonStop(true);
+
+        while (!Bot.ShouldExit && Bot.Player.InCombat)
+        {
+            Core.JumpWait();
+            Bot.Sleep(2500);
+        }
+        Army.waitForParty(map, item);
     }
 
 

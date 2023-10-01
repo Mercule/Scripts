@@ -23,43 +23,20 @@ public class CoreDarkon
         Core.RunCore();
     }
 
-    public void FarmReceipt(int Quantity = 222)
-    {
-        FirstErrand(Quantity);
-    }
+    public void FarmReceipt(int Quantity = 222) => FirstErrand(Quantity);
 
     public void FirstErrand(int Quantity = 222)
     {
         if (Core.CheckInventory("Darkon's Receipt", Quantity))
             return;
 
-        bool EnoughPeople = false;
         Core.AddDrop("Darkon's Receipt");
         Core.FarmingLogger("Darkon's Receipt", Quantity);
         Core.EquipClass(ClassType.Farm);
-        Core.Join("towerofdoom7", "r2", "Left");
 
         Core.RegisterQuests(7324);
         while (!Bot.ShouldExit && !Core.CheckInventory("Darkon's Receipt", Quantity))
-        {
-            if (Bot.Map.Name.ToLower() == "towerofdoom7")
-            {
-                while (!Bot.ShouldExit && Bot.Player.Cell != "r2")
-                {
-                    Core.Jump("r2", "Left");
-                    Bot.Sleep(5000);
-                }
-                if (Bot.Map.PlayerCount >= 3)
-                    EnoughPeople = true;
-                else EnoughPeople = false;
-            }
-
-            else EnoughPeople = false;
-            if (!EnoughPeople)
-                Core.KillMonster("arcangrove", "Right", "Left", "*", "Banana", 22, false, log: false);
-            else Core.KillMonster("towerofdoom7", "r2", "Left", "Dread Gorillaphant", "Banana", 22, false, log: false);
-            Bot.Wait.ForPickup("Darkon's Receipt");
-        }
+            Core.HuntMonster("portalmaze", "Jurassic Monkey", "Banana", 22, false, log: false);
         Core.CancelRegisteredQuests();
     }
 
@@ -197,12 +174,13 @@ public class CoreDarkon
         Core.AddDrop("A Melody");
         Astravia.AstraviaJudgement();
         Core.FarmingLogger("A Melody", Quantity);
-
         Core.RegisterQuests(8396);
         while (!Bot.ShouldExit && (!Core.CheckInventory("A Melody", Quantity)))
         {
+            Core.EquipClass(ClassType.Farm);
             Core.HuntMonster("astraviajudge", "Trumpeter", "Brass", 10, log: false);
             Core.HuntMonster("astraviajudge", "Hand", "Sinew", 10, log: false);
+            Core.EquipClass(ClassType.Solo);
             Core.HuntMonster("astraviajudge", "La", "Knight's Favor", log: false);
             Bot.Wait.ForPickup("A Melody");
         }
@@ -268,9 +246,11 @@ public class CoreDarkon
         Core.RegisterQuests(8641);
         while (!Bot.ShouldExit && !Core.CheckInventory("Ancient Remnant", Quantity))
         {
+            Core.JumpWait();
             Core.EquipClass(ClassType.Farm);
-            Core.HuntMonster("firstobservatory", "Ancient Creature", "Creature Samples", 6);
-            Core.HuntMonster("firstobservatory", "Ancient Turret", "Turret Pieces", 12);
+            Core.KillMonster("firstobservatory", "r7", "Left", "Ancient Creature", "Creature Samples", 6);
+            Core.KillMonster("firstobservatory", "r6", "Left", "Ancient Turret", "Turret Pieces", 12);
+            Core.JumpWait();
             Core.EquipClass(ClassType.Solo);
             Core.HuntMonster($"firstobservatory", "Empress’ Finger", "Alprecha Observed");
             Bot.Wait.ForPickup("Ancient Remnant");

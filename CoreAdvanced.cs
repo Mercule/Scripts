@@ -168,11 +168,11 @@ public class CoreAdvanced
         {
             if (Core.CheckInventory(item.ID, toInv: false) ||
                 miscCatagories.Contains(item.Category) ||
-                (String.IsNullOrEmpty(buyOnlyThis) ? false : buyOnlyThis != item.Name) ||
+                (!String.IsNullOrEmpty(buyOnlyThis) && buyOnlyThis != item.Name) ||
                 (itemBlackList != null && itemBlackList.Any(b => b.ToLower() == item.Name.ToLower())))
                 continue;
 
-            if (Core.IsMember ? true : !item.Upgrade)
+            if (Core.IsMember || !item.Upgrade)
             {
                 if (mode == 3)
                 {
@@ -349,7 +349,7 @@ public class CoreAdvanced
 
         Core.Join(map, cell, pad, publicRoom: publicRoom);
 
-        _RaceGear(monster);
+        // _RaceGear(monster);
         Core.KillMonster(map, cell, pad, monster, item, quant, isTemp, log, publicRoom);
 
         GearStore(true);
@@ -373,7 +373,7 @@ public class CoreAdvanced
 
         Core.Join(map, cell, pad, publicRoom: publicRoom);
 
-        _RaceGear(monsterID);
+        // _RaceGear(monsterID);
 
         Core.KillMonster(map, cell, pad, monsterID, item, quant, isTemp, log, publicRoom);
 
@@ -396,7 +396,7 @@ public class CoreAdvanced
 
         Core.Join(map, publicRoom: publicRoom);
 
-        _RaceGear(monster);
+        // _RaceGear(monster);
 
         Core.HuntMonster(map, monster, item, quant, isTemp, log, publicRoom);
 
@@ -422,8 +422,8 @@ public class CoreAdvanced
             Core.AddDrop(item);
 
         Core.Join(map, cell, pad, publicRoom: publicRoom);
-        if (!forAuto)
-            _RaceGear(monster);
+        // if (!forAuto)
+        //     _RaceGear(monster);
         Core.Jump(cell, pad);
 
         if (item == null)
@@ -456,54 +456,53 @@ public class CoreAdvanced
     /// Ranks up your class
     /// </summary>
     /// <param name="ClassName">Name of the class you want it to rank up</param>
-    public void RankUpClass(string ClassName, bool GearRestore = true)
+    public void RankUpClass(string className, bool gearRestore = true)
     {
-        Bot.Wait.ForPickup(ClassName, 20);
+        InventoryItem? itemInv = Bot.Inventory.Items.Find(i => i.Name.Equals(className, StringComparison.OrdinalIgnoreCase) && i.Category == ItemCategory.Class);
+        Bot.Wait.ForPickup(className, 20);
 
-        if (!Core.CheckInventory(ClassName))
-            return;
-        InventoryItem? itemInv = Bot.Inventory.Items.Find(i => i.Name.ToLower().Trim() == ClassName.ToLower().Trim() && i.Category == ItemCategory.Class);
-        if (itemInv == null && !Bot.Inventory.TryGetItem("ClassName", out itemInv))
+        if (itemInv == null)
         {
-            Core.Logger($"Cant level up \"{ClassName}\" because you do not own it.", messageBox: true);
+            Core.Logger($"Can't level up \"{className}\" because you do not own it.", messageBox: true);
             return;
         }
-        if (itemInv == null)
-            return;
 
         if (itemInv.Quantity == 302500)
         {
-            Core.Logger($"\"{itemInv.Name}\" is already Rank 10");
-            return;
+            Core.Logger($"\"{className}\" is already Rank 10");
         }
-        if (itemInv.Name.Equals("Hobo Highlord") || itemInv.Name.Equals("No Class") || itemInv.Name.Equals("Obsidian No Class"))
+        else if (itemInv.Name.Equals("Hobo Highlord") || itemInv.Name.Equals("No Class") || itemInv.Name.Equals("Obsidian No Class"))
         {
             Core.Logger($"\"{itemInv.Name}\" cannot be leveled past Rank 1");
-            return;
         }
-
-        if (GearRestore)
-            GearStore();
-
-        SmartEnhance(ClassName);
-        if (Bot.Inventory.Items.Find(i => i.Name.ToLower().Trim() == ClassName.ToLower().Trim() && i.Category == ItemCategory.Class)?.EnhancementLevel == 0)
+        else
         {
-            Core.Logger($"Cant level up \"{ClassName}\" because it's not enhanced and AutoEnhance is turned off");
-            return;
+            if (gearRestore)
+                GearStore();
+
+            SmartEnhance(itemInv.Name);
+            var classItem = Bot.Inventory.Items.Find(i => i.Name.Equals(itemInv.Name, StringComparison.OrdinalIgnoreCase) && i.Category == ItemCategory.Class);
+            if (classItem?.EnhancementLevel == 0)
+            {
+                Core.Logger($"Can't level up \"{itemInv.Name}\" because it's not enhanced, and AutoEnhance is turned off");
+            }
+            else
+            {
+                string cpBoost = BestGear(GenericGearBoost.cp, false);
+                EnhanceItem(cpBoost, CurrentClassEnh(), CurrentCapeSpecial(), CurrentHelmSpecial(), CurrentWeaponSpecial());
+                Core.Equip(cpBoost);
+                Farm.ToggleBoost(BoostType.Class);
+
+                Farm.IcestormArena(Bot.Player.Level, true);
+                Core.Logger($"\"{itemInv.Name}\" is now Rank 10");
+
+                Farm.ToggleBoost(BoostType.Class, false);
+                if (gearRestore)
+                    GearStore(true);
+            }
         }
-
-        string CPBoost = BestGear(GenericGearBoost.cp, false);
-        EnhanceItem(CPBoost, CurrentClassEnh(), CurrentCapeSpecial(), CurrentHelmSpecial(), CurrentWeaponSpecial());
-        Core.Equip(CPBoost);
-        Farm.ToggleBoost(BoostType.Class);
-
-        Farm.IcestormArena(Bot.Player.Level, true);
-        Core.Logger($"\"{itemInv.Name}\" is now Rank 10");
-
-        Farm.ToggleBoost(BoostType.Class, false);
-        if (GearRestore)
-            GearStore(true);
     }
+
 
     // Temp here cuz name change is fucky on auto update for some reason
     public void rankUpClass(string ClassName, bool GearRestore = true) => RankUpClass(ClassName, GearRestore);
@@ -653,7 +652,7 @@ public class CoreAdvanced
                         .Select(b => b.Item1);
                 // Should always return true if its two pets or armors or ground runes
 
-                if (filter != null && filter.Any(x => x != null))
+                if (filter != null && filter.Any(x => x != null && x.ID > 0))
                     setToReturn(filter);
                 else
                 {
@@ -974,7 +973,7 @@ public class CoreAdvanced
             MonsterRace = Bot.Monsters.MapMonsters.First(x => x.Name.ToLower() == Monster.ToLower())?.Race ?? "";
         else
         {
-            if (Bot.Monsters.CurrentMonsters.Count() == 0)
+            if (Bot.Monsters.CurrentMonsters.Count == 0)
             {
                 Core.Logger($"No monsters are present in cell \"{Bot.Player.Cell}\" in /{Bot.Map.Name}");
                 return;
@@ -1080,10 +1079,12 @@ public class CoreAdvanced
             return;
         }
 
-        InventoryItem? SelectedItem = Bot.Inventory.Items.Find(i => i.Name == item && EnhanceableCatagories.Contains(i.Category)); ;
+        InventoryItem? SelectedItem = Bot.Inventory.Items.Find(i => i.Name.ToLower().Trim() == item.ToLower().Trim() && EnhanceableCatagories.Contains(i.Category)); ;
         if (SelectedItem == null)
         {
-            if (Bot.Inventory.Items.Any(i => i.Name == item))
+            // Bot.Log(Bot.Inventory.Items.Find(i => i.Name.ToLower().Trim() == item.ToLower().Trim()));
+            // Bot.Log(Bot.Inventory.Items.Find(i => EnhanceableCatagories.Contains(i.Category)));
+            if (Bot.Inventory.Items.Any(i => i.Name.ToLower().Trim() == item.ToLower().Trim()))
                 Core.Logger($"Enhancement Failed: {item} cannot be enhanced");
             return;
         }
@@ -1280,7 +1281,6 @@ public class CoreAdvanced
         InventoryItem? helm = null;
         if (hSpecial != HelmSpecial.None && ItemList.Any(i => i.Category == ItemCategory.Helm))
         {
-            Core.DebugLogger(this);
             helm = ItemList.Find(i => i.Category == ItemCategory.Helm);
 
             // Removing helm from the list because it needs to be enhanced seperately
@@ -1293,7 +1293,6 @@ public class CoreAdvanced
         // If Awe-Enhancements aren't unlocked, enhance them with normal enhancements
         if (wSpecial != WeaponSpecial.None && ItemList.Any(i => i.ItemGroup == "Weapon") && (uAwe() || (int)wSpecial > 6))
         {
-            Core.DebugLogger(this);
             weapon = ItemList.Find(i => i.ItemGroup == "Weapon");
 
             // Removing weapon from the list because it needs to be enhanced seperately
@@ -1341,11 +1340,9 @@ public class CoreAdvanced
             {
                 _AutoEnhance(item, shopID);
                 Bot.Sleep(Core.ActionDelay);
-                Core.DebugLogger(this);
             }
         }
 
-        Core.DebugLogger(this);
         // Enhancing the cape with the cape special
         if (cape != null)
         {
@@ -1395,7 +1392,6 @@ public class CoreAdvanced
                 _AutoEnhance(cape, 2143, ((int)cSpecial > 0) ? "forge" : null);
             else skipCounter++;
         }
-        Core.DebugLogger(this);
 
         // Enhancing the helm with the helm special
         if (helm != null)
@@ -1410,6 +1406,10 @@ public class CoreAdvanced
                     break;
                 case HelmSpecial.Examen:
                     if (!uExamen())
+                        Fail();
+                    break;
+                case HelmSpecial.Forge:
+                    if (!uForgeHelm())
                         Fail();
                     break;
                 case HelmSpecial.Anima:
@@ -1435,18 +1435,15 @@ public class CoreAdvanced
                 _AutoEnhance(helm, 2164, ((int)hSpecial > 0) ? "forge" : null);
             else skipCounter++;
         }
-        Core.DebugLogger(this);
 
         // Enhancing the weapon with the weapon special
         if (weapon != null)
         {
-            Core.DebugLogger(this);
             int shopID = 0;
             bool canEnhance = true;
 
             if ((int)wSpecial <= 6)
             {
-                Core.DebugLogger(this);
                 switch (type)
                 {
                     case EnhancementType.Fighter:
@@ -1475,7 +1472,6 @@ public class CoreAdvanced
             }
             else
             {
-                Core.DebugLogger(this);
                 switch (wSpecial)
                 {
                     case WeaponSpecial.Forge:
@@ -1532,7 +1528,6 @@ public class CoreAdvanced
                         }
                 }
 
-                Core.DebugLogger(this);
                 shopID = 2142;
             }
 
@@ -1558,10 +1553,9 @@ public class CoreAdvanced
             }
 
             // Checking if the item is already optimally enhanced
-            Core.DebugLogger(this, item.Name);
+            // Core.DebugLogger(this, item.Name);
             if (Bot.Player.Level == item.EnhancementLevel)
             {
-                Core.DebugLogger(this);
                 if (specialOnCape)
                 {
                     if ((int)cSpecial == item.EnhancementPatternID)
@@ -1572,10 +1566,8 @@ public class CoreAdvanced
                 }
                 else if (specialOnWeapon)
                 {
-                    Core.DebugLogger(this);
                     if (((int)wSpecial <= 6 ? (int)type : 10) == item.EnhancementPatternID && ((int)wSpecial == getProcID(item) || ((int)wSpecial == 99 && getProcID(item) == 0)))
                     {
-                        Core.DebugLogger(this);
                         skipCounter++;
                         return;
                     }
@@ -1709,10 +1701,12 @@ public class CoreAdvanced
         => Core.isCompletedBefore(8824);
     private bool uExamen()
         => Core.isCompletedBefore(8825);
-    private bool uAnima()
-        => Core.isCompletedBefore(8826);
+    private bool uForgeHelm()
+        => Core.isCompletedBefore(8828);
     private bool uPneuma()
         => Core.isCompletedBefore(8827);
+    private bool uAnima()
+        => Core.isCompletedBefore(8826);
     private bool uDauntless()
         => Core.isCompletedBefore(9172);
     private bool uPraxis()
@@ -1764,7 +1758,7 @@ public class CoreAdvanced
         }
 
         // If the class isn't enhanced yet, enhance it with the enhancement type
-        if (SelectedClass.EnhancementLevel == 0)
+        if (SelectedClass.EnhancementLevel <= 0)
             EnhanceItem(className, (EnhancementType)type);
         Core.Equip(className);
         Bot.Wait.ForTrue(() => Bot.Player.CurrentClass?.Name == className, 40);
@@ -1851,6 +1845,7 @@ public class CoreAdvanced
                     cSpecial = CapeSpecial.Vainglory;
                     wSpecial = WeaponSpecial.Valiance;
                     hSpecial = HelmSpecial.Anima;
+
                     break;
                 #endregion
 
@@ -1867,6 +1862,22 @@ public class CoreAdvanced
                     hSpecial = HelmSpecial.Vim;
                     break;
                 #endregion
+
+                #region Lucky - Lacerate - Forge - Lament
+
+                case "doom metal necro":
+                case "neo metal necro":
+                    if ((!uLacerate() || !uForgeHelm() || !uLament()))
+                        goto default;
+
+                    type = EnhancementType.Lucky;
+                    cSpecial = CapeSpecial.Vainglory;
+                    if (uLacerate())
+                        wSpecial = WeaponSpecial.Lacerate;
+                    hSpecial = HelmSpecial.Forge;
+                    cSpecial = CapeSpecial.Lament;
+                    break;
+                #endregion Lucky - lacerate - forge
 
                 #region Lucky - Vainglory - Lacerate - Vim
                 case "yami no ronin":
@@ -1920,6 +1931,20 @@ public class CoreAdvanced
                     break;
                 #endregion
 
+                #region Lucky - Vainglory - Elysium - Pneuma
+                case "antique hunter":
+                case "artifact hunter":
+                    if (!uVainglory() || !uElysium() || !uPneuma())
+                        goto default;
+
+                    type = EnhancementType.Lucky;
+                    cSpecial = CapeSpecial.Vainglory;
+                    wSpecial = WeaponSpecial.Elysium;
+                    hSpecial = HelmSpecial.Pneuma;
+                    break;
+                #endregion
+
+
                 #region Lucky - Lament - Elysium - Pneuma
                 case "abyssal angel":
                 case "abyssal angel's shadow":
@@ -1927,7 +1952,7 @@ public class CoreAdvanced
                         goto default;
 
                     type = EnhancementType.Lucky;
-                    cSpecial = CapeSpecial.Lament;
+                    cSpecial = CapeSpecial.Vainglory;
                     wSpecial = WeaponSpecial.Elysium;
                     hSpecial = HelmSpecial.Pneuma;
                     break;
@@ -2127,7 +2152,6 @@ public class CoreAdvanced
                 case "alpha pirate":
                 case "arachnomancer":
                 case "arcane dark caster":
-                case "artifact hunter":
                 case "assassin":
                 case "barber":
                 case "bard":
@@ -2163,7 +2187,6 @@ public class CoreAdvanced
                 case "classic dragonlord":
                 case "classic exalted soul cleaver":
                 case "classic guardian":
-                case "classic legion doomknight":
                 case "classic paladin":
                 case "classic pirate":
                 case "classic soul cleaver":
@@ -2382,7 +2405,6 @@ public class CoreAdvanced
                 case "classic doomknight":
                 case "classic exalted soul cleaver":
                 case "classic guardian":
-                case "classic legion doomknight":
                 case "classic paladin":
                 case "classic pirate":
                 case "classic soul cleaver":
@@ -2406,7 +2428,6 @@ public class CoreAdvanced
                 case "infinite legion dark caster":
                 case "infinity titan":
                 case "legion blademaster assassin":
-                case "legion doomknight":
                 case "legion evolved dark caster":
                 case "legion swordmaster assassin":
                 case "leprechaun":
@@ -2471,7 +2492,6 @@ public class CoreAdvanced
                 case "horc evader":
                 case "legendary hero":
                 case "legendary naval commander":
-                case "legion doomknight tester":
                 case "legion revenant member test":
                 case "naval commander":
                 case "paladin high lord":
@@ -2530,6 +2550,9 @@ public class CoreAdvanced
                 case "troubador of love":
                 case "unchained rocker":
                 case "unchained rockstar":
+                case "doom metal necro":
+                case "neo metal necro":
+                case "antique hunter":
                     type = EnhancementType.Lucky;
                     wSpecial = WeaponSpecial.Awe_Blast;
                     break;
@@ -2607,6 +2630,9 @@ public class CoreAdvanced
                 case "pyromancer":
                 case "sakura cryomancer":
                 case "troll spellsmith":
+                case "classic legion doomknight":
+                case "legion doomknight":
+                case "legion doomknight tester":
                     type = EnhancementType.Wizard;
                     wSpecial = WeaponSpecial.Spiral_Carve;
                     break;

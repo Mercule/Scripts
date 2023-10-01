@@ -23,7 +23,6 @@ public class DeathKnightLootChestQuest
 
     private CoreFarms Cf = new();
 
-    int questID = 6509;
 
 
     public void ScriptMain(IScriptInterface Bot)
@@ -53,7 +52,7 @@ public class DeathKnightLootChestQuest
         string[] QuestRewards = RewardOptions.Select(x => x.Name).ToArray();
 
         Core.EquipClass(ClassType.Solo);
-        Adv.BestGear(RacialGearBoost.Elemental);
+        //Adv.BestGear(RacialGearBoost.Elemental);
         Core.RegisterQuests(questID);
         foreach (ItemBase Reward in RewardOptions)
         {

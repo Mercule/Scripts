@@ -43,7 +43,7 @@ public class ArmyBlackSmithRep
         Core.BankingBlackList.AddRange(new[] { "Creature Shard", "Monster Trophy", "Hydra Scale Piece" });
 
         Core.OneTimeMessage("Urgent", "Please Make sure your goto is on in ingame settings so the buttlering system works properly [turn it back off after your done armying please.]", forcedMessageBox: true);
-        
+
         Core.SetOptions();
 
         Setup();
@@ -57,16 +57,22 @@ public class ArmyBlackSmithRep
         Core.RegisterQuests(8736);
         while (!Bot.ShouldExit && Farm.FactionRank("Blacksmithing") < 10)
         {
-            Core.EquipClass(ClassType.Solo);
-            Armykill("maul", new[] { "Creature Creation" }, "Creature Shard", isTemp: false, 1);
-            Armykill("towerofdoom", new[] { "Dread Klunk" }, "Monster Trophy", isTemp: false, 15);
             Core.EquipClass(ClassType.Farm);
             Armykill("hydrachallenge", new[] { "Hydra Head 75" }, "Hydra Scale Piece", isTemp: false, 75);
+            Army.waitForParty("maul");
+            
+            Core.EquipClass(ClassType.Solo);
+            Armykill("maul", new[] { "Creature Creation" }, "Creature Shard", isTemp: false, 1);
+            Army.waitForParty("towerofdoom");
+
+            Armykill("towerofdoom", new[] { "Dread Klunk" }, "Monster Trophy", isTemp: false, 15);
+            Army.waitForParty("hydrachallenge");
+           
         }
         Core.CancelRegisteredQuests();
     }
 
-    void Armykill(string map = null, string[] monsters = null, string item = null, bool isTemp = false, int quant = 1)
+    void Armykill(string? map = null, string[]? monsters = null, string? item = null, bool isTemp = false, int quant = 1)
     {
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = Army.getRoomNr();
@@ -82,7 +88,6 @@ public class ArmyBlackSmithRep
         Core.EquipClass(ClassType.Farm);
         Core.FarmingLogger(item, quant);
 
-        Army.waitForParty(map, item);
         AggroSetup(map);
 
         foreach (string monster in monsters)
@@ -97,7 +102,7 @@ public class ArmyBlackSmithRep
 
     }
 
-    void AggroSetup(string map = null)
+    void AggroSetup(string? map = null)
     {
         if (Bot.Map.Name == null)
             return;
@@ -113,7 +118,7 @@ public class ArmyBlackSmithRep
 
 /*old stuff
 
-    public void GetItems(string map = null, string[] Monsters = null, int questID = 000, string[] Loot = null, bool isTemp = false)
+    public void GetItems(string? map = null, string[]? monsters = null, int questID = 000, string[] Loot = null, bool isTemp = false)
     {
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = Army.getRoomNr();
@@ -145,7 +150,7 @@ public class ArmyBlackSmithRep
         Army.AggroMonStop(true);
     }
 
-    public void GetItem(string map = null, string Monster = null, int questID = 000, string item = null, bool isTemp = false, int quant = 1)
+    public void GetItem(string? map = null, string Monster = null, int questID = 000, string? item = null, bool isTemp = false, int quant = 1)
     {
         Core.PrivateRooms = true;
         Core.PrivateRoomNumber = Army.getRoomNr();

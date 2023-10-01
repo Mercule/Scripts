@@ -29,7 +29,7 @@ public class BeleensMerge
     public CoreLegion CoreLegion = new();
     public LegionExercise3 LegionExercise3 = new();
     public LegionExercise4 LegionExercise4 = new();
-    public CoreNation CoreNation = new();
+    public CoreNation Nation = new();
     public TarosManslayer TarosManslayer = new();
     public ArtixWedding ArtixWedding = new();
 
@@ -50,7 +50,7 @@ public class BeleensMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         ArtixWedding.ArtixWeddingComplete();
         //Only edit the map and shopID here
@@ -71,7 +71,7 @@ public class BeleensMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -164,13 +164,13 @@ public class BeleensMerge
                     Core.FarmingLogger($"{req.Name}", quant);
                     if (!Core.CheckInventory("Raw Dreadsaw"))
                     {
-                        CoreNation.ApprovalAndFavor(10, 0);
-                        CoreNation.FarmDiamondofNulgath(5);
-                        CoreNation.SwindleBulk(10);
+                       Nation.ApprovalAndFavor(10, 0);
+                       Nation.FarmDiamondofNulgath(5);
+                       Nation.SwindleBulk(10);
                         Adv.BuyItem("ArchPortal", 1211, "Raw Dreadsaw");
                     }
-                    CoreNation.ApprovalAndFavor(40, 20);
-                    CoreNation.FarmGemofNulgath(10);
+                   Nation.ApprovalAndFavor(40, 20);
+                   Nation.FarmGemofNulgath(10);
                     Adv.BuyItem("ArchPortal", 1211, req.Name);
                     break;
 
@@ -187,11 +187,11 @@ public class BeleensMerge
                         while (!Bot.ShouldExit && !Core.CheckInventory(req.Name, quant))
                         {
                             TarosManslayer.GuardianTaro(ManslayerOnly: true);
-                            CoreNation.FarmDiamondofNulgath(7);
-                            CoreNation.FarmDarkCrystalShard(13);
-                            CoreNation.SwindleBulk(13);
-                            CoreNation.FarmUni13(1);
-                            CoreNation.FarmVoucher(member: true);
+                           Nation.FarmDiamondofNulgath(7);
+                           Nation.FarmDarkCrystalShard(13);
+                           Nation.SwindleBulk(13);
+                           Nation.FarmUni13(1);
+                           Nation.FarmVoucher(member: true);
                             Core.HuntMonster("Underworld", "Undead Bruiser", "Undead Bruiser Rune");
                             Bot.Wait.ForPickup(req.Name);
                         }

@@ -67,8 +67,8 @@ public class Tercessuinotlim
         if (!Story.QuestProgression(8472))
         {
             Core.EnsureAccept(8472);
-            Core.HuntMonster($"Fiendshard", "Dirtlicker", "Dirtlicker’s Dignity Decimated");
-            Core.HuntMonster($"Tercessuinotlim", "Death's Head", "Death’s Head Demolished");
+            Core.HuntMonster($"Fiendshard", "Dirtlicker", "Dirtlicker's Dignity Decimated");
+            Core.HuntMonster($"Tercessuinotlim", "Death's Head", "Death's Head Demolished");
             Core.HuntMonster("ShadowBlast", "CaesarIsTheDark|Carnage", "Shadowblaster Shamed", 10);
             Core.HuntMonster("QuibbleHunt", "Skew", "Skew Straightened Out");
             Core.HuntMonster("ShadowBlast", "Crag and Bamboozle", "Crag and Bamboozle Cowering");
@@ -81,10 +81,8 @@ public class Tercessuinotlim
         if (!Story.QuestProgression(8473))
         {
             Core.EnsureAccept(8473);
-            Core.KillMonster($"fiendshard","r8", "Left", "Fiend Shard", "Dirtlicker’s Shard Shaving", 3);
-            Core.KillMonster("fiendshard", "r9", "Left", "Nulgath's Fiend Shard", "Piece of the Shard");
-            Core.Jump("Enter", "Spawn");
-            Bot.Wait.ForCombatExit();
+            Core.KillMonster($"fiendshard", "r8", "Left", "Fiend Shard", "Dirtlicker's Shard Shaving", 3);
+            Core.KillNulgathFiendShard("Nulgath's Shard Shaving", 3, true);
             Core.HuntMonster("QuibbleHunt", "RogueFiend", "Roguefiend Crystal Shaving", 5);
             Core.EnsureComplete(8473);
         }

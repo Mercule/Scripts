@@ -40,7 +40,8 @@ public class YulgarsUndineMerge
 
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
-        AoR.YulgarAria();
+        //doall because its also required for shadowrealmmerge which includes this script.
+        AoR.DoAll();
         //Only edit the map and shopID here
         Adv.StartBuyAllMerge("sunlightzone", 2297, findIngredients, buyOnlyThis, buyMode: buyMode);
 
@@ -59,7 +60,7 @@ public class YulgarsUndineMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion

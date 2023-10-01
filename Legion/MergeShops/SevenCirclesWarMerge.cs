@@ -39,7 +39,7 @@ public class SevenCirclesWarMerge
         Core.SetOptions(false);
     }
 
-    public void BuyAllMerge(string buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
+    public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
         Circles.CirclesWar();
         //Only edit the map and shopID here
@@ -60,7 +60,7 @@ public class SevenCirclesWarMerge
             switch (req.Name)
             {
                 default:
-                    bool shouldStop = Adv.matsOnly ? !dontStopMissingIng : true;
+                    bool shouldStop = !Adv.matsOnly || !dontStopMissingIng;
                     Core.Logger($"The bot hasn't been taught how to get {req.Name}." + (shouldStop ? " Please report the issue." : " Skipping"), messageBox: shouldStop, stopBot: shouldStop);
                     break;
                 #endregion
@@ -86,7 +86,7 @@ public class SevenCirclesWarMerge
                 case "Beast Soul":
                     Core.FarmingLogger(req.Name, quant);
                     Core.EquipClass(ClassType.Solo);
-                    Adv.BestGear(RacialGearBoost.Undead);
+                    //Adv.BestGear(RacialGearBoost.Undead);
                     Adv.SmartEnhance(Core.SoloClass);
                     Core.HuntMonster("sevencircleswar", "The Beast", req.Name, quant, isTemp: false, publicRoom: true);
                     break;
