@@ -212,7 +212,7 @@ public class CoreNation
                 Core.KillMonster("mobius", "Slugfit", "Bottom", "Slugfit", "Slugfit Horn", 5, log: false);
                 Core.KillMonster("mobius", "Slugfit", "Bottom", "Cyclops Warlord", "Cyclops Horn", 3, log: false);
             }
-            Core.HuntMonster(Core.IsMember ? "nulgath" : "tercessuinotlim", "Dark Makai", "Makai Fang", 5);
+            Core.KillMonster("tercessuinotlim", "m2", "Top", "Dark Makai", "Makai Fang", 5);
             Core.KillMonster("hydra", "Rune2", "Left", "Fire Imp", "Imp Flame", 3, log: false);
             Core.HuntMonster("greenguardwest", "Big Bad Boar", "Wereboar Tusk", 2, log: false);
 
@@ -314,7 +314,11 @@ public class CoreNation
             Supplies("Unidentified 9");
             Supplies("Unidentified 16");
             Supplies("Unidentified 20");
-            Core.KillMonster("tercessuinotlim", "m1", "Right", "Dark Makai", "Dark Makai Rune");
+            ResetSindles();
+            string[] locations = new[] { "tercessuinotlim", Core.IsMember ? "Nulgath" : "evilmarsh" };
+            string location = locations[new Random().Next(locations.Length)];
+            string cell = location == "tercessuinotlim" ? (new Random().Next(2) == 0 ? "m1" : "m2") : "Field1";
+            Core.KillMonster(location, cell, "Left", "Dark Makai", "Dark Makai Rune");
             Core.EnsureComplete(7551, Item.ID);
             if (Item.Name != "Voucher of Nulgath" && sellMemVoucher)
                 Core.SellItem("Voucher of Nulgath", all: true);
@@ -653,10 +657,18 @@ public class CoreNation
                     {
                         Core.KillEscherion(Item.Name, Item.MaxStack, log: false);
 
-                        if (Item.Name == "Voucher of Nulgath" && sellMemVoucher && Core.CheckInventory("Voucher of Nulgath"))
+                        if (item != "Voucher of Nulgath" && _sellMemVoucher && Core.CheckInventory("Voucher of Nulgath"))
                         {
-                            Bot.Drops.Pickup(Item.Name);
-                            Core.SellItem(Item.Name, all: true);
+                            while (!Bot.ShouldExit && (Bot.Player.HasTarget || Bot.Player.InCombat) && Bot.Player.Cell != "Enter")
+                            {
+                                Bot.Combat.CancelTarget();
+                                Bot.Wait.ForCombatExit();
+                                Core.Jump("Enter", "Spawn");
+                                Bot.Sleep(Core.ActionDelay);
+                            }
+
+                            Bot.Wait.ForPickup("Voucher of Nulgath");
+                            Core.SellItem("Voucher of Nulgath", all: true);
                             Bot.Wait.ForItemSell();
                         }
                     }
@@ -673,9 +685,18 @@ public class CoreNation
                 {
                     Core.KillEscherion(item, quant, log: false);
 
-                    if (item != "Voucher of Nulgath" && sellMemVoucher && Core.CheckInventory("Voucher of Nulgath"))
+                    if (item != "Voucher of Nulgath" && _sellMemVoucher && Core.CheckInventory("Voucher of Nulgath"))
                     {
-                        Bot.Drops.Pickup("Voucher of Nulgath");
+                        Core.JumpWait();
+
+                        while (!Bot.ShouldExit && (Bot.Player.HasTarget || Bot.Player.InCombat) && Bot.Player.Cell != "Enter")
+                        {
+                            Bot.Combat.CancelTarget();
+                            Bot.Wait.ForCombatExit();
+                            Core.Jump("Enter", "Spawn");
+                        }
+
+                        Bot.Wait.ForPickup("Voucher of Nulgath");
                         Core.SellItem("Voucher of Nulgath", all: true);
                         Bot.Wait.ForItemSell();
                     }
@@ -754,10 +775,14 @@ public class CoreNation
 
                         if (Item2 == null)
                             continue;
+                        ResetSindles();
 
                         Core.FarmingLogger(Item2.Name, Item2.MaxStack);
                         Core.EnsureAccept(7551);
-                        Core.KillMonster("tercessuinotlim", "m1", "Right", "Dark Makai", "Dark Makai Rune");
+                        string[] locations = new[] { "tercessuinotlim", Core.IsMember ? "Nulgath" : "evilmarsh" };
+                        string location = locations[new Random().Next(locations.Length)];
+                        string cell = location == "tercessuinotlim" ? (new Random().Next(2) == 0 ? "m1" : "m2") : "Field1";
+                        Core.KillMonster(location, cell, "Left", "Dark Makai", "Dark Makai Rune");
 
                         if (Reward != SwindlesReturnReward.None)
                             Core.EnsureComplete(7551, Item2.ID);
@@ -789,17 +814,31 @@ public class CoreNation
 
                     if (Item2 == null)
                         continue;
+                    ResetSindles();
 
                     Core.FarmingLogger(Item2.Name, Item2.MaxStack);
                     Core.EnsureAccept(7551);
-                    Core.KillMonster("tercessuinotlim", "m1", "Right", "Dark Makai", "Dark Makai Rune");
+
+                    string[] locations = new[] { "tercessuinotlim", Core.IsMember ? "Nulgath" : "evilmarsh" };
+                    string location = locations[new Random().Next(locations.Length)];
+                    string cell = location == "tercessuinotlim" ? (new Random().Next(2) == 0 ? "m1" : "m2") : "Field1";
+                    Core.KillMonster(location, cell, "Left", "Dark Makai", "Dark Makai Rune");
 
 
                     if (Reward != SwindlesReturnReward.None)
                         Core.EnsureComplete(7551, (int)Reward);
                 }
             }
+
         }
+    }
+
+    public void ResetSindles()
+    {
+        Core.EnsureAccept(7551);
+        Bot.Wait.ForQuestAccept(7551);
+        Core.AbandonQuest(7551);
+        Core.EnsureAccept(7551);
     }
 
     /// <summary>
@@ -877,6 +916,7 @@ public class CoreNation
         Core.AddDrop("Relic of Chaos", "Tainted Core");
         Core.AddDrop(string.IsNullOrEmpty(item) ? bagDrops : new string[] { item });
 
+
         bool hasOBoNPet = Core.IsMember && Core.CheckInventory("Oblivion Blade of Nulgath") &&
                           Bot.Inventory.Items.Any(obon => obon.Category == Skua.Core.Models.Items.ItemCategory.Pet && obon.Name == "Oblivion Blade of Nulgath");
         if (hasOBoNPet || Core.CheckInventory("Oblivion Blade of Nulgath Pet (Rare)"))
@@ -887,6 +927,8 @@ public class CoreNation
 
         Core.Logger($"Sell Voucher of Nulgath: {_sellMemVoucher}");
 
+        if (_returnSupplies)
+            Core.AddDrop(Uni(1), Uni(6), Uni(9), Uni(16), Uni(20));
 
         Dictionary<string, int> rewardItemIds = new()
         {
@@ -914,13 +956,12 @@ public class CoreNation
 
             if (item != "Voucher of Nulgath" && _sellMemVoucher && Core.CheckInventory("Voucher of Nulgath"))
             {
-                Core.JumpWait();
-
                 while (!Bot.ShouldExit && (Bot.Player.HasTarget || Bot.Player.InCombat) && Bot.Player.Cell != "Enter")
                 {
                     Bot.Combat.CancelTarget();
                     Bot.Wait.ForCombatExit();
                     Core.Jump("Enter", "Spawn");
+                    Bot.Sleep(Core.ActionDelay);
                 }
 
                 Bot.Drops.Pickup("Voucher of Nulgath");
@@ -931,8 +972,11 @@ public class CoreNation
 
             if (returnPolicyDuringSupplies && Core.CheckInventory(new[] { Uni(1), Uni(6), Uni(9), Uni(16), Uni(20) }))
             {
-                Core.EnsureAccept(7551);
-                Core.KillMonster("tercessuinotlim", "m1", "Right", "Dark Makai", "Dark Makai Rune", publicRoom: false);
+                ResetSindles();
+                string[] locations = new[] { "tercessuinotlim", Core.IsMember ? "Nulgath" : "evilmarsh" };
+                string location = locations[new Random().Next(locations.Length)];
+                string cell = location == "tercessuinotlim" ? (new Random().Next(2) == 0 ? "m1" : "m2") : "Field1";
+                Core.KillMonster(location, cell, "Left", "Dark Makai", "Dark Makai Rune");
 
                 if (item != null && rewardItemIds.TryGetValue(item, out int itemId))
                     Core.EnsureCompleteMulti(7551, itemId);
@@ -1057,7 +1101,7 @@ public class CoreNation
 
             // Equip the Farm class and hunt monsters for quest completion
             Core.EquipClass(ClassType.Farm);
-            Core.HuntMonster(Core.IsMember ? "nulgath" : "tercessuinotlim", "Dark Makai", "Makai Fang", 5);
+            Core.KillMonster("tercessuinotlim", "m2", "Top", "Dark Makai", "Makai Fang", 5);
             Core.HuntMonster("hydra", "Fire Imp", "Imp Flame", 3);
             Core.HuntMonster("battleunderc", "Crystalized Jellyfish", "Aquamarine of Nulgath", 3, false);
 
@@ -1079,14 +1123,13 @@ public class CoreNation
             return;
 
         Core.AddDrop("Diamond of Nulgath");
-        Core.OneTimeMessage("Dark Makai Rune/Sigil Solution", "Randomizing location for \"Dark Makai\"\n" +
-        "as the drop can randomly stop showing up", forcedMessageBox: false);
+
         if (farmDiamond)
             BambloozevsDrudgen("Diamond of Nulgath", 15);
         Core.EnsureAccept(869);
         string[] locations = new[] { "tercessuinotlim", Core.IsMember ? "Nulgath" : "evilmarsh" };
         string location = locations[new Random().Next(locations.Length)];
-        string cell = location == "tercessuinotlim" ? "m1" : "Field1";
+        string cell = location == "tercessuinotlim" ? (new Random().Next(2) == 0 ? "m1" : "m2") : "Field1";
         Core.KillMonster(location, cell, "Left", "Dark Makai", "Dark Makai Sigil", log: false);
 
         Core.EnsureComplete(869);

@@ -17,6 +17,7 @@ using Skua.Core.Options;
 using Skua.Core.Models.Monsters;
 using System.Collections.Generic;
 using Skua.Core.Models.Items;
+using Skua.Core.Models.Quests;
 
 public class ArmyLeveling
 {
@@ -27,12 +28,13 @@ public class ArmyLeveling
     public CoreArmyLite Army = new();
     public SevenCircles SC = new();
     private CoreSoW SoW = new();
+    public CoreStory Story = new();
 
     private static CoreBots sCore = new();
     private static CoreArmyLite sArmy = new();
 
     public bool DontPreconfigure = true;
-    public string OptionsStorage = "ArmyLeveling";
+    public string OptionsStorage = "Army Leveling";
     public List<IOption> Options = new List<IOption>
     {
         new Option<Method>("LevelMethod", "Map selection", "Which map to farm Experience?", Method.IceStormArena),
@@ -52,9 +54,7 @@ public class ArmyLeveling
     public void ScriptMain(IScriptInterface bot)
     {
         Core.SetOptions();
-        Bot.Lite.ReacceptQuest = true;
         Level();
-        Bot.Lite.ReacceptQuest = false;
         Core.SetOptions(false);
     }
 
@@ -74,8 +74,8 @@ public class ArmyLeveling
         {
             case Method.IceStormArena:
                 Core.EquipClass(ClassType.Farm);
-                Army.waitForParty("icestormarena");
-                Army.AggroMonIDs(4002);
+                Army.waitForParty("whitemap");
+                Army.AggroMonCells("r22");
                 Army.AggroMonStart("icestormarena");
                 Army.DivideOnCells("r22");
                 Core.RegisterQuests();
@@ -83,6 +83,8 @@ public class ArmyLeveling
                     Bot.Combat.Attack("*");
                 Army.AggroMonStop(true);
                 Core.JumpWait();
+                Farm.ToggleBoost(BoostType.Experience, false);
+                Farm.ToggleBoost(BoostType.Gold, false);
                 Army.waitForParty("whitemap");
                 break;
 
@@ -91,14 +93,16 @@ public class ArmyLeveling
                     Core.Logger("Player is below lvl 75, which is\n" +
                     "required for the map. --stopping", stopBot: true);
                 Core.EquipClass(ClassType.Farm);
-                Army.waitForParty("icestormunder");
-                Army.AggroMonIDs(4019);
+                Army.waitForParty("whitemap");
+                Army.AggroMonCells("r2");
                 Army.AggroMonStart("icestormunder");
                 Army.DivideOnCells("r2");
                 while (!Bot.ShouldExit && Bot.Player.Level < level)
                     Bot.Combat.Attack("Frost Spirit");
                 Army.AggroMonStop(true);
                 Core.JumpWait();
+                Farm.ToggleBoost(BoostType.Experience, false);
+                Farm.ToggleBoost(BoostType.Gold, false);
                 Army.waitForParty("whitemap");
                 break;
 
@@ -107,8 +111,8 @@ public class ArmyLeveling
                     Core.Logger("Player is below lvl 75, required for\n" +
                     "the map --stopping", stopBot: true);
                 Core.EquipClass(ClassType.Solo);
-                Army.waitForParty("icewing");
-                Army.AggroMonIDs(4003);
+                Army.waitForParty("whitemap");
+                Army.AggroMonCells("Enter");
                 Army.AggroMonStart("icewing");
                 Army.DivideOnCells("Enter");
                 Core.RegisterQuests(Core.IsMember ? 6635 : 6632);
@@ -116,21 +120,25 @@ public class ArmyLeveling
                     Bot.Combat.Attack("*");
                 Army.AggroMonStop(true);
                 Core.JumpWait();
+                Farm.ToggleBoost(BoostType.Experience, false);
+                Farm.ToggleBoost(BoostType.Gold, false);
                 Army.waitForParty("whitemap");
                 break;
 
             case Method.SevenCirclesWar:
                 SC.CirclesWar(true);
                 Core.EquipClass(ClassType.Farm);
-                Army.waitForParty("sevencircleswar");
-                Army.AggroMonIDs(4756, 4758, 4759, 4760);
+                Army.waitForParty("whitemap");
+                Army.AggroMonCells("Enter", "r2", "r3");
                 Army.AggroMonStart("sevencircleswar");
-                Army.DivideOnCells("Enter", "r1", "r2", "r3");
+                Army.DivideOnCells("Enter", "r2", "r3");
                 Core.RegisterQuests(7979, 7980, 7981);
                 while (!Bot.ShouldExit && Bot.Player.Level < level)
                     Bot.Combat.Attack("*");
                 Army.AggroMonStop(true);
                 Core.JumpWait();
+                Farm.ToggleBoost(BoostType.Experience, false);
+                Farm.ToggleBoost(BoostType.Gold, false);
                 Army.waitForParty("whitemap");
                 break;
 
@@ -138,7 +146,7 @@ public class ArmyLeveling
                 SoW.TimestreamWar();
                 Core.EquipClass(ClassType.Farm);
                 Core.AddDrop("Prismatic Seams");
-                Army.waitForParty("streamwar");
+                Army.waitForParty("whitemap");
                 Army.AggroMonCells("r3a");
                 Army.AggroMonStart("streamwar");
                 Army.DivideOnCells("r3a");
@@ -147,6 +155,54 @@ public class ArmyLeveling
                     Bot.Combat.Attack("*");
                 Army.AggroMonStop(true);
                 Core.JumpWait();
+                Farm.ToggleBoost(BoostType.Experience, false);
+                Farm.ToggleBoost(BoostType.Gold, false);
+                Army.waitForParty("whitemap");
+                break;
+
+
+            case Method.ShadowBattleon_High_Levels:
+            case Method.ShadowBattleon_Lower_Levels:
+            case Method.ShadowBattleon_Baby_Mode:
+                RequiredQuest("shadowbattleon", 9426);
+                Core.EquipClass(ClassType.Farm);
+                Core.AddDrop("Wisper");
+
+                if (selectedMethod == Method.ShadowBattleon_Baby_Mode)
+                    Core.RegisterQuests(9421, 9422, 9423);
+                else
+                    Core.RegisterQuests(9421, 9422, 9426);
+
+                Core.Logger($"Mode Selected: {selectedMethod}");
+
+                if (selectedMethod == Method.ShadowBattleon_High_Levels)
+                {
+                    Army.AggroMonCells("r11", "r12");
+                    Army.AggroMonStart("shadowbattleon");
+                    Army.DivideOnCells("r11", "r12");
+                }
+                else if (selectedMethod == Method.ShadowBattleon_Lower_Levels)
+                {
+                    Army.AggroMonCells("r11");
+                    Army.AggroMonStart("shadowbattleon");
+                    Army.DivideOnCells("r11");
+                }
+                else if (selectedMethod == Method.ShadowBattleon_Baby_Mode)
+                {
+                    Army.AggroMonCells("Enter");
+                    Army.AggroMonStart("shadowbattleon");
+                    Army.DivideOnCells("Enter");
+                }
+
+                Core.Logger("This method is optimized. If the rate is ever poor, please use SCW.");
+
+                while (!Bot.ShouldExit && Bot.Player.Level < level)
+                    Bot.Combat.Attack("*");
+
+                Army.AggroMonStop(true);
+                Core.JumpWait();
+                Farm.ToggleBoost(BoostType.Experience, false);
+                Farm.ToggleBoost(BoostType.Gold, false);
                 Army.waitForParty("whitemap");
                 break;
 
@@ -156,7 +212,7 @@ public class ArmyLeveling
                 case Method.Method:
                 Core.EquipClass(ClassType.ClassType);
                 Army.waitForParty("map");
-                Army.AggroMonIDs(monsterid);
+                Army.AggroMonCells(cells);
                 Army.AggroMonStart("map");
                 Army.DivideOnCells("cell");
                 Core.RegisterQuests(questIDs);
@@ -169,8 +225,6 @@ public class ArmyLeveling
 
                 */
         }
-        Army.AggroMonStop(true);
-        Farm.ToggleBoost(BoostType.Experience, false);
         Core.CancelRegisteredQuests();
         Core.JumpWait();
     }
@@ -181,8 +235,49 @@ public class ArmyLeveling
         IceStormUnder = 2,
         Streamwar = 3,
         SevenCirclesWar = 4,
-        IceWing = 5
+        IceWing = 5,
+        ShadowBattleon_Baby_Mode = 6,
+        ShadowBattleon_Lower_Levels = 7,
+        ShadowBattleon_High_Levels = 8,
+    }
 
+
+    void RequiredQuest(string map, int Quest)
+    {
+        Quest QuestData = Core.EnsureLoad(Quest);
+        if (Core.isCompletedBefore(Quest))
+        {
+            Core.Logger($"{QuestData.Name} [ {QuestData.ID}] Already unlocked! onto the gains.");
+            return;
+        }
+
+        Bot.Lite.ReacceptQuest = false;
+        Core.Logger($"Unlocking {QuestData.Name} [ {QuestData.ID}]");
+        switch (map)
+        {
+            case "shadowbattleon":
+
+                Core.EquipClass(ClassType.Solo);
+
+                // Mega Shadow Hunt Medal
+                Story.KillQuest(9422, "shadowbattleon", "Doomed Beast");
+                // Early Autopsy
+                Story.KillQuest(9423, "shadowbattleon", "Doomed Beast");
+                // Given Life and Purpose
+                Story.KillQuest(9424, "shadowbattleon", "Possessed Armor");
+                // Adult Hatchling
+                Story.KillQuest(9425, "shadowbattleon", "Ouro Spawn");
+                // Solidified Light
+                Story.KillQuest(9426, "shadowbattleon", "Tainted Wraith");
+                Core.Logger($"{QuestData.Name} [ {QuestData.ID}] Unlocked! Onto the gains.");
+                break;
+
+            case "Default":
+                //Example Case
+                break;
+        }
+        Core.JumpWait();
+        Army.waitForParty("Whitemap");
     }
 
 }

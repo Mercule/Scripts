@@ -16,10 +16,15 @@ public class CoreFriday13th
 
     public bool Friday13thCheck([CallerMemberName] string caller = "")
     {
-        bool _bool = Core.IsMember || (new DateTime(DateTime.Now.Year, DateTime.Now.Month, 13).DayOfWeek == DayOfWeek.Friday && DateTime.Now.Day >= 5);
-        if (!_bool)
-            Core.Logger($"You must be Member or wait until a week before Friday the 13th to complete {caller}.");
-        return _bool;
+        if (Core.isSeasonalMapActive("blackmaze"))
+            return true;
+
+        bool isMemberOrFriday13th = Core.IsMember || (new DateTime(DateTime.Now.Year, DateTime.Now.Month, 13).DayOfWeek == DayOfWeek.Friday && DateTime.Now.Day >= 5);
+
+        if (!isMemberOrFriday13th)
+            Core.Logger($"You must be a Member or wait until a week before Friday the 13th to complete {caller}");
+
+        return isMemberOrFriday13th;
     }
 
     public void ScriptMain(IScriptInterface bot)
@@ -29,8 +34,11 @@ public class CoreFriday13th
 
     public void CompleteFriday13th()
     {
-        if (!Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
 
         Skullpunch();
         Lowe();
@@ -52,8 +60,17 @@ public class CoreFriday13th
 
     public void Skullpunch()
     {
-        if (Core.isCompletedBefore(3119) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(3119))
+        {
+            Core.Logger("[Skullpunch] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -126,8 +143,17 @@ public class CoreFriday13th
 
     public void Lowe()
     {
-        if (Core.isCompletedBefore(763) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(763))
+        {
+            Core.Logger("[Lowe] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -179,8 +205,17 @@ public class CoreFriday13th
 
     public void Saloonfront()
     {
-        if (Core.isCompletedBefore(1057) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(1057))
+        {
+            Core.Logger("[Saloonfront] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -235,8 +270,18 @@ public class CoreFriday13th
 
     public void Firehouse()
     {
-        if (Core.isCompletedBefore(1564) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(1564))
+        {
+            Core.Logger("[Firehouse] Complete.");
+            return;
+        }
+
         Story.PreLoad(this);
 
         // Gaining Trust 1552
@@ -288,8 +333,17 @@ public class CoreFriday13th
 
     public void Sleezter()
     {
-        if (Core.isCompletedBefore(1972) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(1972))
+        {
+            Core.Logger("[Sleezter] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -335,8 +389,17 @@ public class CoreFriday13th
 
     public void Neverhub()
     {
-        if (Core.isCompletedBefore(2234) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(2234))
+        {
+            Core.Logger("[Neverhub] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -386,13 +449,22 @@ public class CoreFriday13th
 
     public void Battledoom()
     {
-        if (Core.CheckInventory("Cursed Mirror of Enutrof") || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
 
         //Banking Black List doesn't do anything after SetOptions has been called. ~Lord Exelot
-        //Core.BankingBlackList.AddRange(new[] { "Unlucky Gem I", "Unlucky Gem II", "Unlucky Gem III",
         //                                       "Unlucky Gem IV", "Unlucky Gem V", "Unlucky Gem VI",
         //                                       "Unlucky Gem VII", "Cursed Mirror of Enutrof", "Shadowglass Shard" });
+
+        // Check if item is in inventory
+        if (Core.CheckInventory("Cursed Mirror of Enutrof"))
+        {
+            Core.Logger("[Battledoom] Complete.");
+            return;
+        }
 
         Story.LegacyQuestManager(QuestLogic, 4648, 4649, 4650, 4651, 4652, 4653, 4654, 4655, 4656);
 
@@ -449,8 +521,17 @@ public class CoreFriday13th
 
     public void Wormhole()
     {
-        if (Core.isCompletedBefore(5066) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(5066))
+        {
+            Core.Logger("[Wormhole] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -507,8 +588,17 @@ public class CoreFriday13th
 
     public void Crownsreachfxiii()
     {
-        if (Core.isCompletedBefore(5646) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(5646))
+        {
+            Core.Logger("[Crownsreachfxiii] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -545,8 +635,17 @@ public class CoreFriday13th
 
     public void Gonnagetcha()
     {
-        if (Core.isCompletedBefore(6269) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(6269))
+        {
+            Core.Logger("[Gonnagetcha] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -591,8 +690,17 @@ public class CoreFriday13th
 
     public void Greymoor()
     {
-        if (Core.isCompletedBefore(6420) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(6420))
+        {
+            Core.Logger("[Greymoor] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -638,8 +746,17 @@ public class CoreFriday13th
 
     public void Puzzlebox()
     {
-        if (Core.isCompletedBefore(7399) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(7399))
+        {
+            Core.Logger("[Puzzlebox] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -679,11 +796,18 @@ public class CoreFriday13th
 
     public void Splatterwar()
     {
-        if (Core.isCompletedBefore(7407) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
 
+        if (Core.isCompletedBefore(7407))
+        {
+            Core.Logger("[Splatterwar] Complete.");
+            return;
+        }
         Puzzlebox();
-
         Story.PreLoad(this);
 
         // Slasher Medals 7400
@@ -713,8 +837,17 @@ public class CoreFriday13th
 
     public void Deadfly()
     {
-        if (Core.isCompletedBefore(8232) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(8232))
+        {
+            Core.Logger("[Deadfly] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -778,8 +911,17 @@ public class CoreFriday13th
 
     public void Oddities()
     {
-        if (Core.isCompletedBefore(8667) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
+
+        if (Core.isCompletedBefore(8667))
+        {
+            Core.Logger("[Oddities] Complete.");
+            return;
+        }
 
         Story.PreLoad(this);
 
@@ -845,11 +987,18 @@ public class CoreFriday13th
 
     public void BlackMaze()
     {
-        if (Core.isCompletedBefore(9055) || !Friday13thCheck())
+        if (!Core.isSeasonalMapActive("blackmaze") && !Friday13thCheck())
+        {
+            Core.Logger(!Core.isSeasonalMapActive("blackmaze") ? "seasonal maps not aviable" : "Friday the 13th not active yet");
             return;
+        }
 
+        if (Core.isCompletedBefore(9055))
+        {
+            Core.Logger("[BlackMaze] Complete.");
+            return;
+        }
         //9045 | Gobbling Globlins
-        Story.KillQuest(9045, "blackmaze", "Globlin");
         Story.MapItemQuest(9045, "blackmaze", 11085);
 
         //9046 | Flowers for Forever

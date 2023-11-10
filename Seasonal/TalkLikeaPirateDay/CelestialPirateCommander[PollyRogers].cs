@@ -11,6 +11,7 @@ using Skua.Core.Options;
 public class CelestialPirateCommander
 {
     public IScriptInterface Bot => IScriptInterface.Instance;
+    private CoreFarms Farm = new();
 
     public CoreBots Core => CoreBots.Instance;
     public bool DontPreconfigure = true;
@@ -48,11 +49,16 @@ public class CelestialPirateCommander
     public void GetCPC(bool PetOnly = true)
     {
 
+        if (Bot.Player.Level < 80)
+            Farm.Experience(80);
+        
         if ((PetOnly && Core.CheckInventory("Polly Roger")) || !Core.isSeasonalMapActive("lowtide"))
         {
             Core.Logger(!Core.isSeasonalMapActive("lowtide") ? "Not the right season ya dummy" : "You already have Polly Roger");
             return;
         }
+        
+        Farm.Experience(80);
 
         int i = 1;
         Core.AddDrop(Rewards);

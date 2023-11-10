@@ -473,7 +473,7 @@ public class ArmyLR
                 break;
 
             case "revenant":
-                map = "revenant-" + (Array.IndexOf(Army.Players(), Core.Username()) > 2 ? (Army.getRoomNr() + 1).ToString() : "");
+                map = "revenant" + (Array.IndexOf(Army.Players(), Core.Username()) > 2 ? (Army.getRoomNr() + 1).ToString() : "");
                 Army.AggroMonMIDs(1, 2, 3, 4);
                 Army.AggroMonStart(map);
                 Army.DivideOnCells("r2");
@@ -534,9 +534,9 @@ public class ArmyLR
                 break;
 
             case "aqlesson":
-                Army.DivideOnCells("Frame9");
                 Army.AggroMonMIDs(17);
                 Army.AggroMonStart(map);
+                Army.DivideOnCells("Frame9");
                 break;
 
             case "deepchaos":

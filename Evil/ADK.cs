@@ -125,6 +125,8 @@ public class ArchDoomKnight
             return;
 
         Core.AddDrop(Q3items);
+
+        Core.AddDrop(25286);
         Core.EnsureAccept(6797);
 
         Core.EquipClass(ClassType.Solo);
@@ -141,22 +143,26 @@ public class ArchDoomKnight
         Core.HuntMonster("stormtemple", "Chaos Lord Lionfang", "Chaos Lionfang Armor", isTemp: false);
         Core.HuntMonster("swordhavenfalls", "Chaos Lord Alteon", "Shorn Chaos King Crown", isTemp: false);
         Core.KillXiang("Xiang Chaos", isTemp: false);
-        Core.HuntMonster("ultradrakath", "Champion of Chaos", "Drakath's Sword", isTemp: false);
+
+        //Drakath's Sword (Free Player)
+        while (!Bot.ShouldExit && !Core.CheckInventory(25286))
+            Core.HuntMonster("ultradrakath", "Champion of Chaos");
+
         Core.HuntMonster("mqlesson", "Dragonoid", "Dragonoid of Hours", isTemp: false);
         Core.HuntMonster("timespace", "Chaos Lord Iadoa", "Chaorrupted Hourglass", isTemp: false);
         Core.EnsureComplete(6797);
         Core.ToBank(Q3items);
     }
 
-    public void AMeansToAnEnd(bool ArmorOnly = false)
+    public void AMeansToAnEnd(bool ArmorOnly = false, bool HelmOnly = false)
     {
         if (!Core.isCompletedBefore(6798))
             ChaoticLords();
-            
-        if (ArmorOnly && Core.CheckInventory("Arch DoomKnight"))
+
+        if (HelmOnly && Core.CheckInventory("Arch DoomKnight Helm") || (ArmorOnly && Core.CheckInventory("Arch DoomKnight")))
             return;
 
-        if (Core.CheckInventory(new[] { "Arch DoomKnight", "Arch DoomKnight Open Helm", "Arch DoomKnight Helm" }, toInv: false))
+        else if (Core.CheckInventory(new[] { "Arch DoomKnight", "Arch DoomKnight Open Helm", "Arch DoomKnight Helm" }, toInv: false))
             return;
 
         Core.AddDrop(Q4items);

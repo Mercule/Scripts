@@ -146,6 +146,19 @@ public class CoreFireIsland
 
         Story.PreLoad(this);
 
+        //map aggro from pyrewatch
+        while (Bot.ShouldExit && Bot.Map.Name != "feverfew")
+        {
+            Core.Jump("Enter", "Spawn");
+            Bot.Wait.ForCombatExit();
+            Bot.Sleep(Core.ActionDelay);
+            if (!Bot.Player.InCombat)
+            {
+                Core.Join("feverfew");
+                Bot.Wait.ForMapLoad("feverfew");
+            }
+        }
+
         //Quench the Flames
         Story.KillQuest(4128, "feverfew", "Firestorm Knight");
 
@@ -179,11 +192,11 @@ public class CoreFireIsland
         {
             Core.EnsureAccept(4134);
 
-            Core.HuntMonster("feverfew", "Salamander", "Salamander Tongue", 3, log: false);
-            Core.HuntMonster("feverfew", "Feverfew Vase", "Adderoot Powder", 2, log: false);
-            Core.HuntMonster("feverfew", "Twisted Undine", "Shadowbane Brine", 4, log: false);
-            Core.HuntMonster("feverfew", "Coral Creeper", "Charred Claw", 2, log: false);
-            Core.HuntMonster("feverfew", "Firestorm Knight", "Whispered Regret", log: false);
+            Core.HuntMonster("feverfew", "Salamander", "Salamander Tongue", 3);
+            Core.HuntMonster("feverfew", "Feverfew Vase", "Adderoot Powder", 2);
+            Core.HuntMonster("feverfew", "Twisted Undine", "Shadowbane Brine", 4);
+            Core.HuntMonster("feverfew", "Coral Creeper", "Charred Claw", 2);
+            Core.HuntMonster("feverfew", "Firestorm Knight", "Whispered Regret");
 
             Core.EnsureComplete(4134);
         }
@@ -198,7 +211,23 @@ public class CoreFireIsland
         Story.MapItemQuest(4137, "feverfew", 3242, 10);
 
         //Parting the Waters
-        Story.KillQuest(4138, "feverfew", new[] { "Salamander", "Coral Creeper", "Firestorm Knight", "Twisted Undine" });
+        if (!Story.QuestProgression(4138))
+        {
+            Core.Logger("Quest needs to be abadoned before it can be completed adn reaccepted.");
+            Core.EnsureAccept(4138);
+            Core.AbandonQuest(4138);
+
+            Core.EnsureAccept(4138);
+
+            Core.HuntMonster("feverfew", "Salamander", "Burning Ember", 3);
+            Core.HuntMonster("feverfew", "Coral Creeper", "Stoneskin Shard", 3);
+            Core.HuntMonster("feverfew", "Firestorm Knight", "Last Breath", 3);
+            Core.HuntMonster("feverfew", "Twisted Undine", "Undine's Tear", 3);
+
+            Core.Jump("Cut2", "Left");
+            Core.EnsureComplete(4138);
+        }
+
 
         //The Power to Heal
         Story.KillQuest(4139, "feverfew", new[] { "Locked Chest", "Feverfew Vase", "Twisted Undine" });

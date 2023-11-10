@@ -36,3 +36,5 @@ Generated
 !SkuaScriptsGenerator/SkuaScriptsGenerator.csproj
 !QuestData.json
 Assemblies
+CoreCommunication.cs
+Army/Generated

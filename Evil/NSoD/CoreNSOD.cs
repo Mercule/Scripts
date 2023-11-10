@@ -145,6 +145,7 @@ public class CoreNSOD
             // Disable aggro, Jump and wait, wait for combat exit, equip FarmClass
             Core.Logger("Switching to FarmClass with aggro off");
             Bot.Options.AggroMonsters = false;
+
             Core.EquipClass(ClassType.Farm);
 
             // Farm mob 1 for essence with aggro on
@@ -155,6 +156,7 @@ public class CoreNSOD
             // Disable aggro, Jump and wait, wait for combat exit, equip SoloClass
             Core.Logger("Switching to SoloClass with aggro off");
             Bot.Options.AggroMonsters = false;  // Set aggro off for mob 2
+
             Core.EquipClass(ClassType.Solo);
 
             // Hunt mob 2 for essence with aggro off
@@ -212,7 +214,7 @@ public class CoreNSOD
             Core.EquipClass(ClassType.Farm);
             Core.HuntMonster("timespace", "Astral Ephemerite", "Astral Ephemerite Essence", Essencequant, false, log: false);
             Core.EquipClass(ClassType.Solo);
-            
+
             HuntMonsterBatch(Essencequant, false, true, false,
                 ("citadel", "m13", "Down", "Belrot the Fiend", "Belrot the Fiend Essence"),
                 ("greenguardwest", "BKWest15", "Down", "Black Knight", "Black Knight Essence"),

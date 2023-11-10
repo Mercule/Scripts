@@ -1944,7 +1944,6 @@ public class CoreAdvanced
                     break;
                 #endregion
 
-
                 #region Lucky - Lament - Elysium - Pneuma
                 case "abyssal angel":
                 case "abyssal angel's shadow":
@@ -1955,6 +1954,26 @@ public class CoreAdvanced
                     cSpecial = CapeSpecial.Vainglory;
                     wSpecial = WeaponSpecial.Elysium;
                     hSpecial = HelmSpecial.Pneuma;
+                    break;
+                #endregion
+
+                #region Lucky - Penitence - Dauntless - anima
+                case "verus doomKnight":
+                    if (!uPenitence() || !uDauntless() || !uAnima())
+                    {
+                        if (uForgeCape() && uValiance() && uForgeHelm())
+                        {
+                            type = EnhancementType.Lucky;
+                            cSpecial = CapeSpecial.Forge;
+                            wSpecial = WeaponSpecial.Valiance;
+                            hSpecial = HelmSpecial.Forge;
+                        }
+                        else goto default;
+                    }
+                    type = EnhancementType.Lucky;
+                    cSpecial = CapeSpecial.Penitence;
+                    wSpecial = WeaponSpecial.Dauntless;
+                    hSpecial = HelmSpecial.Anima;
                     break;
                 #endregion
 
@@ -1971,8 +1990,19 @@ public class CoreAdvanced
                     break;
                 #endregion
 
-                #region Lucky - Avarice - Elysium - Anima
+                #region Lucky - Avarice - Dauntless - Anima
                 case "flame dragon warrior":
+                    if (!uAvarice() || !uDauntless() || !uAnima())
+                        goto default;
+
+                    type = EnhancementType.Lucky;
+                    cSpecial = CapeSpecial.Avarice;
+                    wSpecial = WeaponSpecial.Dauntless;
+                    hSpecial = HelmSpecial.Anima;
+                    break;
+                #endregion
+
+                #region Lucky - Avarice - Elysium - Anima
                 case "chaos slayer":
                 case "chaos slayer berserker":
                 case "chaos slayer cleric":
@@ -2123,7 +2153,7 @@ public class CoreAdvanced
                     wSpecial = WeaponSpecial.Valiance;
                     hSpecial = HelmSpecial.Pneuma;
                     break;
-                #endregion
+                #endregion 
 
                 #endregion
 
@@ -2139,8 +2169,21 @@ public class CoreAdvanced
                     wSpecial = WeaponSpecial.Elysium;
                     hSpecial = HelmSpecial.Pneuma;
                     break;
+
                 #endregion
 
+                #region  Healer - None - Valiance - Nine
+                case "obsidian paladin chronomancer":
+                    if (!uValiance())
+                        goto default;
+
+                    type = EnhancementType.Healer;
+                    cSpecial = CapeSpecial.None;
+                    wSpecial = WeaponSpecial.Valiance;
+                    hSpecial = HelmSpecial.None;
+                    break;
+
+                #endregion
                 #endregion
 
                 #region Unassigned Region
@@ -2464,6 +2507,7 @@ public class CoreAdvanced
                 case "unlucky leperchaun":
                 case "void highlord":
                 case "void highlord (ioda)":
+                case "verus doomKnight":
                     type = EnhancementType.Lucky;
                     wSpecial = WeaponSpecial.Spiral_Carve;
                     break;
@@ -2685,6 +2729,13 @@ public class CoreAdvanced
                 case "dragon of time":
                     type = EnhancementType.Healer;
                     wSpecial = WeaponSpecial.Health_Vamp;
+                    break;
+                #endregion
+
+                #region Healer - Mana Vamp
+                case "obsidian paladin chronomancer":
+                    type = EnhancementType.Healer;
+                    wSpecial = WeaponSpecial.Mana_Vamp;
                     break;
                 #endregion
 

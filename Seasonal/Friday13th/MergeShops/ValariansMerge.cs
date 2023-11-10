@@ -39,9 +39,6 @@ public class ValariansMerge
 
     public void BuyAllMerge(string? buyOnlyThis = null, mergeOptionsEnum? buyMode = null)
     {
-        if (!F13.Friday13thCheck("Valarians Merge"))
-            return;
-
         F13.BlackMaze();
 
         //Only edit the map and shopID here
@@ -67,7 +64,7 @@ public class ValariansMerge
                     break;
                 #endregion
 
-                case "Zenobia’s Moglinberry Juice":
+                case "Zenobia's Moglinberry Juice":
                     Core.FarmingLogger(req.Name, quant);
                     Core.EquipClass(ClassType.Farm);
                     Core.RegisterQuests(9056);
